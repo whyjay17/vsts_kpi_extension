@@ -93,51 +93,36 @@
                     potential: document.getElementById("potential").value,
                     goal: document.getElementById("goal").value
                 };
-                dataService.createDocument("MyCollection", newDoc).then(function(doc) {
+                dataService.createDocument("MyCollection2", newDoc).then(function(doc) {
                 // Even if no ID was passed to createDocument, one will be generated
                 console.log(doc);
+                location.reload();
             });
             });
 
         }
 
         VSS.init();
-        VSS.getService(VSS.ServiceIds.ExtensionData).then(function(dataService) {
-            // Prepare document first
-            var newDoc = {
-                name: false,
-                actual: 500,
-                potential: 550,
-                goal: 10
-            };
-
-            dataService.createDocument("MyCollection", newDoc).then(function(doc) {
-                // Even if no ID was passed to createDocument, one will be generated
-                console.log("Doc id: " + doc.id);
-            });
-        });
-
 
         var items = {}
 
         // Get data service
+        
         VSS.getService(VSS.ServiceIds.ExtensionData).then(function(dataService) {
             // Get all document under the collection
-            dataService.getDocuments("MyCollection").then(function(docs) {
-                console.log("There are " + docs.length + " in the collection.");
-                console.log('prop', docs);
+            dataService.getDocuments("MyCollection2").then(function(docs) {
+
                 items = docs
-                console.log('items', items)
 
                 for(var i = 0; i < docs.length; i++) {
-                    document.getElementById("items").innerHTML = "KPI Name : " + items[i].name;
+                    console.log('doclen', docs.length)
+                    console.log(items[i].name)
+                    document.getElementById("items").innerHTML += "KPI Name : " + items[i].name + '<br/><br/>';
+                    
                 }
 
             });
         });
-
-    console.log('items2', items)
-
 
     </script>
 </head>
