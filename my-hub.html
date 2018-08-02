@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <script src="lib/VSS.SDK.min.js"></script>
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        .body {
+            font-family: "Segoe UI VSS (Regular)","-apple-system",BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Helvetica,Ubuntu,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+            color: #212121;
+            font-size: 12px;
+            background-color: #fff;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #666;
+            padding: 30px;
+            text-align: center;
+            font-size: 35px;
+            color: white;
+        }
+
+        .button {
+            font-family: "Segoe UI VSS (Regular)","-apple-system",BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Helvetica,Ubuntu,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+            height: 30px;
+            border: 1px solid #c8c8c8;
+            background-color: #f8f8f8;
+            color: #333;
+            cursor: pointer;
+            outline: 0;
+            padding: 2px 12px 2px 12px;
+        }
+
+        .add {
+            display: inline-block;
+            max-width: 250px;
+            border: 1px solid transparent;
+            cursor: pointer;
+        }
+
+                /* Create two columns/boxes that floats next to each other */
+        nav {
+            float: left;
+            width: 15%;
+            border-right:#212121 1px;
+            padding: 20px;
+        }
+
+        /* Style the list inside the menu */
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        article {
+            float: left;
+            padding: 20px;
+            width: 85%;
+            border-left: 1px solid #ccc;
+        }
+
+        /* Clear floats after the columns */
+        section:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        .create_button {
+            border-bottom: 1px solid #ccc;
+        }
+
+    </style>
+    <script type="text/javascript">
+        function sConsole(event) {
+            event.preventDefault();
+            console.log(document.getElementById("name").value);
+            console.log(document.getElementById("actual").value);
+            console.log(document.getElementById("potential").value);
+            console.log(document.getElementById("goal").value);
+            
+            VSS.getService(VSS.ServiceIds.ExtensionData).then(function(dataService) {
+                // Prepare document first
+                var newDoc = {
+                    name: document.getElementById("name").value,
+                    actual: document.getElementById("actual").value,
+                    potential: document.getElementById("potential").value,
+                    goal: document.getElementById("goal").value
+                };
+                dataService.createDocument("MyCollection", newDoc).then(function(doc) {
+                // Even if no ID was passed to createDocument, one will be generated
+                console.log(doc);
+            });
+            });
+
+        }
+
+        VSS.init();
+        VSS.getService(VSS.ServiceIds.ExtensionData).then(function(dataService) {
+            // Prepare document first
+            var newDoc = {
+                name: false,
+                actual: 500,
+                potential: 550,
+                goal: 10
+            };
+
+            dataService.createDocument("MyCollection", newDoc).then(function(doc) {
+                // Even if no ID was passed to createDocument, one will be generated
+                console.log("Doc id: " + doc.id);
+            });
+        });
+
+
+        var items = {}
+
+        // Get data service
+        VSS.getService(VSS.ServiceIds.ExtensionData).then(function(dataService) {
+            // Get all document under the collection
+            dataService.getDocuments("MyCollection").then(function(docs) {
+                console.log("There are " + docs.length + " in the collection.");
+                console.log('prop', docs);
+                items = docs
+                console.log('items', items)
+
+                for(var i = 0; i < docs.length; i++) {
+                    document.getElementById("items").innerHTML = "KPI Name : " + items[i].name;
+                }
+
+            });
+        });
+
+    console.log('items2', items)
+
+
+    </script>
+</head>
+<body>
+
+        <section>
+                <nav>
+                  <div class="create_button">+ Create KPI</div>
+                  <div id="items"></div>
+                </nav>
+                
+                <article>
+                    <h2>Create KPI</h2>
+                    <br>
+                    <form action="" id="form" onsubmit="sConsole(event)">
+                        KPI Name<br>
+                        <input type="data" id="name">
+                        <br><br>
+                        Actual Value<br>
+                        <input type="data" id="actual">
+                        <br><br>
+                        Potential Value<br>
+                        <input type="data" id="potential">
+                        <br><br>
+                        Goal %<br>
+                        <input type="data" id="goal">
+                        <br><br>
+                        <button type="submit">Create</button><span>Cancel</span>
+                    </form> 
+                </article>
+              </section>
+</body>
+
+<!--
+    <section>
+        <nav>
+            <div class="add">+ Add KPI</div>
+            <ul>
+                <li><a href="#">London</a></li>
+                <li><a href="#">Paris</a></li>
+                <li><a href="#">Tokyo</a></li>
+            </ul>
+        </nav>
+        
+        <article>
+            <form action="/action_page.php">
+                KPI Name:<br>
+                <input type="text" name="firstname">
+                <br>
+                Actual Value:<br>
+                <input type="text" name="lastname">
+                <br>
+                Potential Value:<br>
+                <input type="text" name="lastname">
+                <br>
+                Goal %:<br>
+                <input type="text" name="lastname">
+                <br><br>
+                <span class="add"><input type="submit" value="Create"></span><span>Cancel</span>
+            </form> 
+        </article>
+    </section>   
+
+-->
+
+</html>
+
