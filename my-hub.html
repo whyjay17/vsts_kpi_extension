@@ -76,16 +76,20 @@
             border-bottom: 1px solid #ccc;
         }
 
+        #items {
+            text-align: center;
+            margin-top: 1em;
+            margin-bottom: 1em;
+        }
+
     </style>
     <script type="text/javascript">
-        function sConsole(event) {
+
+        function setDocument(event) {
             event.preventDefault();
-            console.log(document.getElementById("name").value);
-            console.log(document.getElementById("actual").value);
-            console.log(document.getElementById("potential").value);
-            console.log(document.getElementById("goal").value);
-            
-            VSS.getService(VSS.ServiceIds.ExtensionData).then(function(dataService) {
+
+            if (document.getElementById("docId").value == "") {
+                VSS.getService(VSS.ServiceIds.ExtensionData).then(function(dataService) {
                 // Prepare document first
                 var newDoc = {
                     name: document.getElementById("name").value,
@@ -97,96 +101,133 @@
                 // Even if no ID was passed to createDocument, one will be generated
                 console.log(doc);
                 location.reload();
+                });
             });
-            });
+            } else {
+                VSS.getService(VSS.ServiceIds.ExtensionData).then(function(dataService) {
+                    var collection = "MyCollection2";
+                    var docId = document.getElementById("docId").value;
+                    console.log('doc id in update', document.getElementById("docId").value)
+                    // Get document first
+                    dataService.getDocument("MyCollection2", docId).then(function(doc) {
+                        // Update the document
+                        doc.name = document.getElementById("name").value;
+                        doc.actual = document.getElementById("actual").value;
+                        doc.potential = document.getElementById("potential").value;
+                        doc.goal = document.getElementById("goal").value;
 
+                        dataService.updateDocument("MyCollection2", doc).then(function(d) {
+                            // Check the new version
+                            console.log("Doc version: " + d.__etag);
+                            console.log(doc);
+                            location.reload();
+                        });
+                    });
+                });
+            }
+        }
+
+        function deleteDocument(doc) {
+            event.preventDefault();
+            VSS.getService(VSS.ServiceIds.ExtensionData).then(function(dataService) {
+
+                // Delete document
+                dataService.deleteDocument("MyCollection2", document.getElementById("docId").value).then(function() {
+                    console.log("Doc deleted");
+                    location.reload();
+                });
+            });
+        }
+
+        function updateInput(doc) {
+            event.preventDefault();
+            document.getElementById('deleteButton').style.visibility='visible';
+            document.getElementById("submitButton").innerHTML = "Update";
+            document.getElementById("docId").value = doc.id;
+            document.getElementById("name").value = doc.name;
+            document.getElementById("actual").value = doc.actual;
+            document.getElementById("potential").value = doc.potential;
+            document.getElementById("goal").value = doc.goal;
         }
 
         VSS.init();
 
-        var items = {}
+        const items = {};
 
-        // Get data service
-        
-        VSS.getService(VSS.ServiceIds.ExtensionData).then(function(dataService) {
-            // Get all document under the collection
-            dataService.getDocuments("MyCollection2").then(function(docs) {
 
-                items = docs
 
-                for(var i = 0; i < docs.length; i++) {
-                    console.log('doclen', docs.length)
-                    console.log(items[i].name)
-                    document.getElementById("items").innerHTML += "KPI Name : " + items[i].name + '<br/><br/>';
-                    
+        // Get data service and display
+
+        VSS.getService(VSS.ServiceIds.ExtensionData)
+        // the callback on the next line returns a promise, which the JavaScript engine will follow, so you don't need to nest the next `then`
+            .then((dataService) => dataService.getDocuments('MyCollection2'))
+            .then((docs) => {
+                // keep a reference to the element instead of searching for it in each loop.
+                const container = document.getElementById('items');
+
+                // this loop will remove any existing children
+                while (container.firstChild !== null) {
+                    container.removeChild(container.firstChild);
                 }
 
+                // `for...of` is a simpler way to iterate over a collection
+                for (const doc of docs) {
+                    // create a `div` element
+                    const div = document.createElement("div");
+
+                    // add a text node to it
+                    div.appendChild(document.createTextNode(doc.name));
+
+                    // add event listeners to change its background
+                    div.addEventListener("mouseover", e => { div.style.background = "#D5DBDB"; });
+                    div.addEventListener("mouseout", e => { div.style.background = "white"; });
+
+                    // add a `click` listener
+                    div.addEventListener("click", e => {
+                        console.log(doc);
+                        updateInput(doc);
+                    });
+
+                    // add the new div to the container
+                    container.appendChild(div);
+                }
             });
-        });
 
     </script>
 </head>
 <body>
-
-        <section>
-                <nav>
-                  <div class="create_button">+ Create KPI</div>
-                  <div id="items"></div>
-                </nav>
-                
-                <article>
-                    <h2>Create KPI</h2>
-                    <br>
-                    <form action="" id="form" onsubmit="sConsole(event)">
-                        KPI Name<br>
-                        <input type="data" id="name">
-                        <br><br>
-                        Actual Value<br>
-                        <input type="data" id="actual">
-                        <br><br>
-                        Potential Value<br>
-                        <input type="data" id="potential">
-                        <br><br>
-                        Goal %<br>
-                        <input type="data" id="goal">
-                        <br><br>
-                        <button type="submit">Create</button><span>Cancel</span>
-                    </form> 
-                </article>
-              </section>
-</body>
-
-<!--
     <section>
         <nav>
-            <div class="add">+ Add KPI</div>
-            <ul>
-                <li><a href="#">London</a></li>
-                <li><a href="#">Paris</a></li>
-                <li><a href="#">Tokyo</a></li>
-            </ul>
+            <div class="create_button">List of KPIs</div>
+            <div id="items"></div>
         </nav>
         
         <article>
-            <form action="/action_page.php">
-                KPI Name:<br>
-                <input type="text" name="firstname">
-                <br>
-                Actual Value:<br>
-                <input type="text" name="lastname">
-                <br>
-                Potential Value:<br>
-                <input type="text" name="lastname">
-                <br>
-                Goal %:<br>
-                <input type="text" name="lastname">
+            <h2>Create KPI</h2>
+            <br>
+            <form action="" id="form" onsubmit="setDocument(event)">
+                KPI Name<br>
+                <input type="data" id="name">
                 <br><br>
-                <span class="add"><input type="submit" value="Create"></span><span>Cancel</span>
+                Actual Value<br>
+                <input type="data" id="actual">
+                <br><br>
+                Potential Value<br>
+                <input type="data" id="potential">
+                <br><br>
+                Goal %<br>
+                <input type="data" id="goal">
+                <br><br>
+                <button id="submitButton" type="submit">Create</button><span>Cancel</span>
+                <br>
+                <button id="deleteButton" style="visibility: hidden" onclick="deleteDocument(event)">Delete</button>
+                <br>
+                
+                <input type="data" id="docId" style="visibility: hidden">
             </form> 
         </article>
-    </section>   
-
--->
+    </section>
+</body>
 
 </html>
 
