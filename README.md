@@ -1,0 +1,2 @@
+# What is a Key Performance Indicator (KPI)?
+A Key Performance Indicator (KPI) is a measurable value that demonstrates how effectively a company is achieving key business objectives. Organizations use KPIs at multiple levels to evaluate their success at reaching targets. High-level KPIs may focus on the overall performance of the enterprise, while low-level KPIs may focus on processes or employees in departments such as sales, marketing or a call center.
