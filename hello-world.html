@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        #kpiTable {
+            font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+        #kpiTable td, #kpiTable th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }       
+        #kpiTable th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
+	<script src="lib/VSS.SDK.min.js"></script>
+    <script type="text/javascript">
+        VSS.init({
+            explicitNotifyLoaded: true,
+			usePlatformStyles: true
+        });
+
+               
+        VSS.require("TFS/Dashboards/WidgetHelpers", function (WidgetHelpers) {
+			WidgetHelpers.IncludeWidgetStyles();
+            VSS.register("HelloWorldWidgettttttttt", function () {                
+                return {
+                    load: function (widgetSettings) {
+                        var $title = $('h2.title');
+                        $title.text('KPI Table');
+                        return WidgetHelpers.WidgetStatusHelper.Success();
+                    }
+                }
+            });
+            VSS.notifyLoadSucceeded();
+        });
+
+        // Get data service
+        VSS.getService(VSS.ServiceIds.ExtensionData).then(function(dataService) {
+            // Get all document under the collection
+            dataService.getDocuments("MyCollection2").then(function(docs) {
+                console.log(docs);
+            });
+        });
+       
+
+
+        VSS.getService(VSS.ServiceIds.ExtensionData)
+        // the callback on the next line returns a promise, which the JavaScript engine will follow, so you don't need to nest the next `then`
+            .then((dataService) => dataService.getDocuments('MyCollection2'))
+            .then((docs) => {
+                // keep a reference to the element instead of searching for it in each loop.
+                const table = document.getElementById("kpiTable");
+
+                // `for...of` is a simpler way to iterate over a collection
+                for (const doc of docs) {
+                    
+                    var row = table.insertRow(1);
+                    var KPIs = row.insertCell(0);
+                    var actual = row.insertCell(1);
+                    var potential = row.insertCell(2);
+                    var goalPercent = row.insertCell(3);
+                    var actualPercent = row.insertCell(4);
+                    KPIs.innerHTML = doc.name;
+                    actual.innerHTML = doc.actual;
+                    potential.innerHTML = doc.potential;
+                    goalPercent.innerHTML = doc.goal + " %";
+                    actualPercent.innerHTML = ((doc.actual / doc.potential) * 100) + " %";
+                }
+            });
+
+
+
+
+
+    </script>
+
+</head>
+<body>
+	<div class="widget">
+        <h2 class="title"></h1>
+            <table id="kpiTable">
+                <tr>
+                  <th>KPIs</th>
+                  <th>Actual</th>
+                  <th>Potential</th>
+                  <th>Goal %</th>
+                  <th>Actual %</th>
+                </tr>
+              </table>
+	</div>
+</body>
+</html>
