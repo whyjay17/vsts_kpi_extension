@@ -2,7 +2,7 @@
     "manifestVersion": 1,
     "id": "my-first-extension",
     "publisher": "YJ",
-    "version": "1.2.577",
+    "version": "1.2.579",
     "name": "My Second Extension",
     "description": "A sample Visual Studio Services extension",
     "public": false,
