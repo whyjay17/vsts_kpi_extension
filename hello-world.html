@@ -63,7 +63,6 @@
 
                 // `for...of` is a simpler way to iterate over a collection
                 for (const doc of docs) {
-                    
                     var row = table.insertRow(1);
                     var KPIs = row.insertCell(0);
                     var actual = row.insertCell(1);
@@ -86,7 +85,7 @@
 
 </head>
 <body>
-	<div class="widget">
+	<div class="widget" style="overflow: auto">
         <h2 class="title"></h1>
             <table id="kpiTable">
                 <tr>
