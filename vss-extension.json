@@ -2,7 +2,7 @@
     "manifestVersion": 1,
     "id": "kpi-package",
     "publisher": "YJ",
-    "version": "0.0.6",
+    "version": "0.0.11",
     "name": "KPI Extension Package",
     "description": "An extension for Microsoft's Visual Studio Team Services (VSTS), which is a cloud service for collaborating on code development, to manage KPIs within an organization.",
     "public": false,
@@ -25,7 +25,12 @@
             "properties": {
                 "name": "KPI Manager",
                 "uri": "kpi-hub.html",
-                "iconAsset": "YJ.kpi-manager/img/hub-icon.png"
+                "iconAsset": "YJ.kpi-manager/img/hub-icon.png",
+                "_sharedData": {
+                    "assets": [
+                        "YJ.kpi-manager/img/hub-icon.png"
+                    ]
+                }
             }
         },
         {
