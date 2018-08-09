@@ -170,7 +170,6 @@
                 container.removeChild(container.firstChild);
             }
 
-            // `for...of` is a simpler way to iterate over a collection
             for (const doc of docs) {
                 // create a `div` element
                 const div = document.createElement("li");
@@ -180,11 +179,17 @@
                 // add a text node to it
                 div.appendChild(document.createTextNode(doc.name));
 
+                div.addEventListener("click", e => {
+                    updateInput(doc);
+                 });
+
+                container.appendChild(div);
+            }
+            
                 // add event listeners to change its background
                 //div.addEventListener("mouseover", e => { div.style.background = "#e9ecef"; });
                 //div.addEventListener("mouseout", e => { div.style.background = "white"; });
 
-                // add a `click` listener
                 //get all the elements with calss list-group-item
                 [...document.querySelectorAll('.list-group-item')].forEach(function(item) {
                     // iterate and add event lstener to each of them
@@ -197,14 +202,11 @@
                         }
                         //add the active class to the element from which click event triggered
                         item.classList.add('clicked')
-
                     })
                 })
 
 
-                // add the new div to the container
-                container.appendChild(div);
-            }
+
         });
 
     </script>
