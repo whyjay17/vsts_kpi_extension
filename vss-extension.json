@@ -1,12 +1,15 @@
 {
     "manifestVersion": 1,
-    "id": "my-first-extension",
+    "id": "kpi-package",
     "publisher": "YJ",
-    "version": "2.2.35",
-    "name": "My Second Extension",
-    "description": "A sample Visual Studio Services extension",
+    "version": "0.0.6",
+    "name": "KPI Extension Package",
+    "description": "An extension for Microsoft's Visual Studio Team Services (VSTS), which is a cloud service for collaborating on code development, to manage KPIs within an organization.",
     "public": false,
-    "categories": ["Code"],
+    "categories": ["Plan and track"],
+    "icons": {
+        "default": "img/kpi.png"
+    },
     "targets": [
         {
             "id": "Microsoft.VisualStudio.Services"
@@ -14,28 +17,29 @@
     ],
     "contributions": [
         {
-            "id": "my-hub",
+            "id": "kpi-manager",
             "type": "ms.vss-web.hub",
             "targets": [
-                "ms.vss-code-web.code-hub-group"
+                "ms.vss-work-web.work-hub-group"
             ],
             "properties": {
-                "name": "Formmmm",
-                "uri": "my-hub.html"
+                "name": "KPI Manager",
+                "uri": "kpi-hub.html",
+                "iconAsset": "YJ.kpi-manager/img/hub-icon.png"
             }
         },
         {
-            "id": "HelloWorldWidgettttttttt",
+            "id": "kpi-widget",
             "type": "ms.vss-dashboards-web.widget",
             "targets": [
                 "ms.vss-dashboards-web.widget-catalog"
-            ],
+            ],    
             "properties": {
-                "name": "Hello World Widget",
-                "description": "My first widgetttt.",
-                "catalogIconUrl": "img/helloWorld.png",
-                "previewImageUrl": "img/helloWorld_330x160.png",
-                "uri": "hello-world.html",
+                "name": "KPI Table Widget",
+                "description": "A widget that display the KPI of this project.",
+                "catalogIconUrl": "img/kpi_98x98.png",
+                "previewImageUrl": "img/kpi_330x160.png",
+                "uri": "kpi-widget.html",
                 "supportedSizes": [
                     {
                         "rowSpan": 2,
@@ -48,6 +52,9 @@
             }
         }
     ],
+    "scopes": [
+        "vso.project"
+    ],
     "files": [
         {
             "path": "css/table.css",
@@ -58,12 +65,15 @@
             "addressable": true
         },
         {
-            "path": "my-hub.html",
+            "path": "kpi-hub.html",
             "addressable": true
         },
         {
-            "path": "hello-world.html",
+            "path": "kpi-widget.html",
             "addressable": true
+        },
+        {
+            "path": "img", "addressable": true
         },
         {
             "path": "node_modules/vss-web-extension-sdk/lib",
