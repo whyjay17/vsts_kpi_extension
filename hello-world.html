@@ -106,14 +106,22 @@
                         based on the direction, asc or desc:*/
                         if (dir == "asc") {
                             if (n === 4) {  
-                                if (x.innerHTML.substring(0, x.innerHTML.indexOf(' %')) < y.innerHTML.substring(0, y.innerHTML.indexOf(' %'))) {
+                                if (parseFloat(x.innerHTML.substring(0, x.innerHTML.indexOf(' %'))) < parseFloat(y.innerHTML.substring(0, y.innerHTML.indexOf(' %')))) {
+                                    //if so, mark as a switch and break the loop:
+                                    shouldSwitch= true;
+                                    break;
+                                }
+                            }
+                            else if (n == 0) {
+                                if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                                    console.log(x.innerHTML, y.innerHTML)
                                     //if so, mark as a switch and break the loop:
                                     shouldSwitch= true;
                                     break;
                                 }
                             }
                             else {
-                                if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                                if (parseFloat(x.innerHTML) > parseFloat(y.innerHTML))  {
                                     console.log(x.innerHTML, y.innerHTML)
                                     //if so, mark as a switch and break the loop:
                                     shouldSwitch= true;
@@ -122,13 +130,20 @@
                             }
                         } else if (dir == "desc") {
                             if (n === 4) {
-                                if (x.innerHTML.substring(0, x.innerHTML.indexOf(' %')) > y.innerHTML.substring(0, y.innerHTML.indexOf(' %'))) {
+                                if (parseFloat(x.innerHTML.substring(0, x.innerHTML.indexOf(' %'))) > parseFloat(y.innerHTML.substring(0, y.innerHTML.indexOf(' %')))) {
                                     //if so, mark as a switch and break the loop:
                                     shouldSwitch= true;
                                     break;
                                 }
-                            } else {
+                            } else if (n == 0) {
                                 if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                                    console.log(x.innerHTML, y.innerHTML)   
+                                    //if so, mark as a switch and break the loop:
+                                    shouldSwitch = true;
+                                    break;                                
+                                }
+                            } else {
+                                if (parseFloat(x.innerHTML) < parseFloat(y.innerHTML)) {
                                     console.log(x.innerHTML, y.innerHTML)   
                                     //if so, mark as a switch and break the loop:
                                     shouldSwitch = true;
