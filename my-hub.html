@@ -64,6 +64,10 @@
         .list-group-item {
             margin-left: 1em;
         }
+        .list-group-item:hover {
+            background-color: #e6f3fb;
+            color: black;
+        }
         .clicked {
             background-color: #cee7f8;
             color: black;
@@ -132,6 +136,8 @@
 
         function resetForm(event) {
             event.preventDefault();
+            let clicked = document.getElementsByClassName('clicked');
+            clicked[0].classList.remove('clicked')
             document.getElementById('mini-header-id').innerHTML = "Create KPI"
             document.getElementById('deleteButton').style.visibility='hidden';
             document.getElementById("docId").value = "";

@@ -25,6 +25,22 @@
         i {
             margin-left: 0.75em;
         }
+        .inline {
+            margin-top: 0;
+            margin-bottom: 0;
+            margin-left: 0.3em;
+            display: -webkit-inline-box;
+            font-size: 10px;
+        }
+        .red {
+            color: red;
+        }
+        .yellow {
+            color: #FFBF40;
+        }
+        .green {
+            color: #4CAF50;
+        }
     </style>
 	<script src="lib/VSS.SDK.min.js"></script>
     <script type="text/javascript">
@@ -78,20 +94,49 @@
                     potential.innerHTML = doc.potential;
                     goalPercent.innerHTML = doc.goal + " %";
                     actualPercent.innerHTML = ((doc.actual / doc.potential) * 100).toFixed(2) + " %";
+
+                    // diffElement = document.createElement("p");
+
+                    difference = (((doc.actual / doc.potential) * 100).toFixed(2) - doc.goal).toFixed(2)
+                    console.log('diff and goal', parseFloat(difference), parseFloat(doc.goal))
+                       
+                    const diffElem = document.createElement("p");
+                    diffElem.classList.add("inline");
+                    diffElem.appendChild(document.createTextNode(` (${difference} %)`));
+                    diffElem.classList.add
+                    
+
+                    console.log(diffElem)
+
+                    if (parseFloat(difference) < -10) {
+                        diffElem.classList.add("red");
+                        actualPercent.appendChild(diffElem)
+                    } else if (-10 <= parseFloat(difference) && parseFloat(difference) <= 10) {
+                        diffElem.classList.add("yellow");
+                        actualPercent.appendChild(diffElem)
+                    } else {
+                        diffElem.classList.add("green");
+                        actualPercent.appendChild(diffElem)
+                    }
+
+
                 }
             });
             function sortTable(n) {
                 var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
                 table = document.getElementById("kpiTable");
                 switching = true;
+
                 //Set the sorting direction to ascending:
                 dir = "asc"; 
+
                 /*Make a loop that will continue until
                 no switching has been done:*/
                 while (switching) {
                     //start by saying: no switching is done:
                     switching = false;
                     rows = table.rows;
+                    
                     /*Loop through all table rows (except the
                     first, which contains table headers):*/
                     for (i = 1; i < (rows.length - 1); i++) {
