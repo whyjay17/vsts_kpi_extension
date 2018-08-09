@@ -2,7 +2,7 @@
     "manifestVersion": 1,
     "id": "my-first-extension",
     "publisher": "YJ",
-    "version": "2.2.18",
+    "version": "2.2.33",
     "name": "My Second Extension",
     "description": "A sample Visual Studio Services extension",
     "public": false,
@@ -49,6 +49,14 @@
         }
     ],
     "files": [
+        {
+            "path": "css/table.css",
+            "addressable": true
+        },
+        {
+            "path": "css/hub.css",
+            "addressable": true
+        },
         {
             "path": "my-hub.html",
             "addressable": true

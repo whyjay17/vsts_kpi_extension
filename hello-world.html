@@ -1,47 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <style>
-        #kpiTable {
-            font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-            border-collapse: collapse;
-            width: 100%;
-        }
-        #kpiTable td, #kpiTable th {
-            border: 1px solid #ddd;
-            padding: 8px;
-        }       
-        #kpiTable th {
-            padding-top: 12px;
-            padding-bottom: 12px;
-            text-align: left;
-            background-color: #4CAF50;
-            color: white;
-        }
-        #kpiTable tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-        i {
-            margin-left: 0.75em;
-        }
-        .inline {
-            margin-top: 0;
-            margin-bottom: 0;
-            margin-left: 0.3em;
-            display: -webkit-inline-box;
-            font-size: 10px;
-        }
-        .red {
-            color: red;
-        }
-        .yellow {
-            color: #FFBF40;
-        }
-        .green {
-            color: #4CAF50;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/table.css">
 	<script src="lib/VSS.SDK.min.js"></script>
     <script type="text/javascript">
         VSS.init({
@@ -95,33 +56,26 @@
                     goalPercent.innerHTML = doc.goal + " %";
                     actualPercent.innerHTML = ((doc.actual / doc.potential) * 100).toFixed(2) + " %";
 
-                    // diffElement = document.createElement("p");
-
                     difference = (((doc.actual / doc.potential) * 100).toFixed(2) - doc.goal).toFixed(2)
-                    console.log('diff and goal', parseFloat(difference), parseFloat(doc.goal))
                        
                     const diffElem = document.createElement("p");
                     diffElem.classList.add("inline");
                     diffElem.appendChild(document.createTextNode(` (${difference} %)`));
                     diffElem.classList.add
-                    
 
-                    console.log(diffElem)
-
-                    if (parseFloat(difference) < -10) {
+                    if (parseFloat(difference) < 0) {
                         diffElem.classList.add("red");
                         actualPercent.appendChild(diffElem)
-                    } else if (-10 <= parseFloat(difference) && parseFloat(difference) <= 10) {
+                    } else if (0 <= parseFloat(difference) && parseFloat(difference) <= 10) {
                         diffElem.classList.add("yellow");
                         actualPercent.appendChild(diffElem)
                     } else {
                         diffElem.classList.add("green");
                         actualPercent.appendChild(diffElem)
                     }
-
-
                 }
             });
+
             function sortTable(n) {
                 var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
                 table = document.getElementById("kpiTable");
@@ -142,25 +96,46 @@
                     for (i = 1; i < (rows.length - 1); i++) {
                         //start by saying there should be no switching:
                         shouldSwitch = false;
+
                         /*Get the two elements you want to compare,
                         one from current row and one from the next:*/
                         x = rows[i].getElementsByTagName("TD")[n];
                         y = rows[i + 1].getElementsByTagName("TD")[n];
+
                         /*check if the two rows should switch place,
                         based on the direction, asc or desc:*/
                         if (dir == "asc") {
-                            if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                            if (n === 4) {  
+                                if (x.innerHTML.substring(0, x.innerHTML.indexOf(' %')) < y.innerHTML.substring(0, y.innerHTML.indexOf(' %'))) {
                                     //if so, mark as a switch and break the loop:
                                     shouldSwitch= true;
                                     break;
+                                }
                             }
-                        } else if (dir == "desc") {
-                                if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                            else {
+                                if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                                    console.log(x.innerHTML, y.innerHTML)
                                     //if so, mark as a switch and break the loop:
-                                    shouldSwitch = true;
+                                    shouldSwitch= true;
                                     break;
                                 }
                             }
+                        } else if (dir == "desc") {
+                            if (n === 4) {
+                                if (x.innerHTML.substring(0, x.innerHTML.indexOf(' %')) > y.innerHTML.substring(0, y.innerHTML.indexOf(' %'))) {
+                                    //if so, mark as a switch and break the loop:
+                                    shouldSwitch= true;
+                                    break;
+                                }
+                            } else {
+                                if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                                    console.log(x.innerHTML, y.innerHTML)   
+                                    //if so, mark as a switch and break the loop:
+                                    shouldSwitch = true;
+                                    break;                                
+                                }
+                            }
+                        }
                     }
                     if (shouldSwitch) {
                         /*If a switch has been marked, make the switch
