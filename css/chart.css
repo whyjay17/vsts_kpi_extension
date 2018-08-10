@@ -9,6 +9,10 @@ html, body {
   fill: #0080FF
 }
 
+.bar2 {
+  fill: red;
+}
+
 .bar:hover {
   fill: #003366
 }
