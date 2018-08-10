@@ -1,15 +1,12 @@
 {
     "manifestVersion": 1,
-    "id": "kpi-package",
+    "id": "budget-tracking-package",
     "publisher": "YJ",
-    "version": "0.0.6",
-    "name": "KPI Extension Package",
-    "description": "An extension for Microsoft's Visual Studio Team Services (VSTS), which is a cloud service for collaborating on code development, to manage KPIs within an organization.",
+    "version": "0.0.2",
+    "name": "Budget Tracking Package",
+    "description": "An extension for Microsoft's Visual Studio Team Services (VSTS), which is a cloud service for collaborating on code development, to manage track budget within an organization.",
     "public": false,
     "categories": ["Plan and track"],
-    "icons": {
-        "default": "img/kpi.png"
-    },
     "targets": [
         {
             "id": "Microsoft.VisualStudio.Services"
@@ -17,29 +14,29 @@
     ],
     "contributions": [
         {
-            "id": "kpi-manager",
+            "id": "budget-tracker",
             "type": "ms.vss-web.hub",
             "targets": [
                 "ms.vss-work-web.work-hub-group"
             ],
             "properties": {
-                "name": "KPI Manager",
-                "uri": "kpi-hub.html",
-                "iconAsset": "YJ.kpi-manager/img/hub-icon.png"
+                "name": "Budget Tracking Package",
+                "uri": "budget-hub.html",
+                "iconAsset": "YJ.budget-tracker/img/hub-icon.png"
             }
         },
         {
-            "id": "kpi-widget",
+            "id": "budget-bargraph-widget",
             "type": "ms.vss-dashboards-web.widget",
             "targets": [
                 "ms.vss-dashboards-web.widget-catalog"
             ],    
             "properties": {
-                "name": "KPI Table Widget",
-                "description": "A widget that display the KPI of this project.",
+                "name": "Budget Tracking Widget",
+                "description": "A widget that display the budget information in bar-graphs.",
                 "catalogIconUrl": "img/kpi_98x98.png",
                 "previewImageUrl": "img/kpi_330x160.png",
-                "uri": "kpi-widget.html",
+                "uri": "budget-widget.html",
                 "supportedSizes": [
                     {
                         "rowSpan": 2,
@@ -57,7 +54,7 @@
     ],
     "files": [
         {
-            "path": "css/table.css",
+            "path": "css/chart.css",
             "addressable": true
         },
         {
@@ -65,11 +62,11 @@
             "addressable": true
         },
         {
-            "path": "kpi-hub.html",
+            "path": "budget-hub.html",
             "addressable": true
         },
         {
-            "path": "kpi-widget.html",
+            "path": "budget-widget.html",
             "addressable": true
         },
         {

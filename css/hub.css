@@ -57,11 +57,11 @@
         margin-left: 1em;
     }
     .list-group-item:hover {
-        background-color: #e6f3fb;
+        background-color: #fbf4e6;
         color: black;
     }
     .clicked {
-        background-color: #cee7f8;
+        background-color: #f8e7ce;
         color: black;
     }
 

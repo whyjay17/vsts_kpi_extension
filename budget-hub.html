@@ -15,11 +15,11 @@
                 // Prepare document first
                 var newDoc = {
                     name: document.getElementById("name").value,
+                    projected: document.getElementById("projected").value,
                     actual: document.getElementById("actual").value,
-                    potential: document.getElementById("potential").value,
-                    goal: document.getElementById("goal").value
+                    le: document.getElementById("le").value
                 };
-                dataService.createDocument("MyCollection2", newDoc).then(function(doc) {
+                dataService.createDocument("MyCollection3", newDoc).then(function(doc) {
                 // Even if no ID was passed to createDocument, one will be generated
                 console.log(doc);
                 location.reload();
@@ -27,18 +27,18 @@
             });
             } else {
                 VSS.getService(VSS.ServiceIds.ExtensionData).then(function(dataService) {
-                    var collection = "MyCollection2";
+                    var collection = "MyCollection3";
                     var docId = document.getElementById("docId").value;
                     console.log('doc id in update', document.getElementById("docId").value)
                     // Get document first
-                    dataService.getDocument("MyCollection2", docId).then(function(doc) {
+                    dataService.getDocument("MyCollection3", docId).then(function(doc) {
                         // Update the document
                         doc.name = document.getElementById("name").value;
+                        doc.projected = document.getElementById("projected").value;
                         doc.actual = document.getElementById("actual").value;
-                        doc.potential = document.getElementById("potential").value;
-                        doc.goal = document.getElementById("goal").value;
+                        doc.le = document.getElementById("le").value;
 
-                        dataService.updateDocument("MyCollection2", doc).then(function(d) {
+                        dataService.updateDocument("MyCollection3", doc).then(function(d) {
                             // Check the new version
                             console.log("Doc version: " + d.__etag);
                             console.log(doc);
@@ -54,7 +54,7 @@
             VSS.getService(VSS.ServiceIds.ExtensionData).then(function(dataService) {
 
                 // Delete document
-                dataService.deleteDocument("MyCollection2", document.getElementById("docId").value).then(function() {
+                dataService.deleteDocument("MyCollection3", document.getElementById("docId").value).then(function() {
                     console.log("Doc deleted");
                     location.reload();
                 });
@@ -65,25 +65,25 @@
             event.preventDefault();
             let clicked = document.getElementsByClassName('clicked');
             clicked[0].classList.remove('clicked')
-            document.getElementById('mini-header-id').innerHTML = '<i class="far fa-chart-bar"></i>Update KPI'
+            document.getElementById('mini-header-id').innerHTML = '<i class="fas fa-file-invoice-dollar"></i>Create Epic'
             document.getElementById('deleteButton').style.visibility='hidden';
             document.getElementById("docId").value = "";
             document.getElementById("name").value = "";
+            document.getElementById("projected").value =  "";
             document.getElementById("actual").value =  "";
-            document.getElementById("potential").value =  "";
-            document.getElementById("goal").value =  "";
+            document.getElementById("le").value =  "";
         }
 
         function updateInput(doc) {
             event.preventDefault();
-            document.getElementById('mini-header-id').innerHTML = '<i class="far fa-chart-bar"></i>Update KPI'
+            document.getElementById('mini-header-id').innerHTML = '<i class="fas fa-file-invoice-dollar"></i>Update Epic'
             document.getElementById('deleteButton').style.visibility='visible';
             document.getElementById("submitButton").innerHTML = "Update";
             document.getElementById("docId").value = doc.id;
             document.getElementById("name").value = doc.name;
             document.getElementById("actual").value = doc.actual;
-            document.getElementById("potential").value = doc.potential;
-            document.getElementById("goal").value = doc.goal;
+            document.getElementById("projected").value = doc.projected;
+            document.getElementById("le").value = doc.le;
         }
 
         VSS.init();
@@ -91,8 +91,8 @@
     
         // Get data service and display
         VSS.getService(VSS.ServiceIds.ExtensionData)
-        // the callback on the next line returns a promise, which the JavaScript engine will follow, so you don't need to nest the next `then`
-        .then((dataService) => dataService.getDocuments('MyCollection2'))
+        // the callback on the next line returns x` promise, which the JavaScript engine will follow, so you don't need to nest the next `then`
+        .then((dataService) => dataService.getDocuments('MyCollection3'))
         .then((docs) => {
             // keep a reference to the element instead of searching for it in each loop.
             const container = document.getElementById('items');
@@ -148,11 +148,11 @@
     <div class="row" style="margin-right: 0">
         <div class="col-sm-2 border-right" style="padding: 0; width: 100%; height: 100vh">
                 <div class="row border-bottom" style="margin-top: 1em;">
-                    <!--<h1 class="display-4 mini-header">List of KPIs</h1>-->
+                    
                     <button
                         type="button"
                         class="btn btn-info"
-                        onclick="resetForm(event)"><i class="fa fa-plus"></i> Create KPI</button>
+                        onclick="resetForm(event)"><i class="fa fa-plus"></i> Create Epic</button>
                 </div>
                 <div id="list-group-row" class="row" style="margin-top: 1.5em; justify-content: center;">
                     <ul class="list-group" id="items"></ul>
@@ -161,35 +161,31 @@
         <div class="col-sm-10">
             <div style="margin-left: 3em">
                 <div class="row" style="margin-top: 1.5em;">
-                        <h1 id="mini-header-id" class="display-4 mini-header"><i class="far fa-chart-bar"></i>Create KPI</h1>
+                        <h1 id="mini-header-id" class="display-4 mini-header"><i class="fas fa-file-invoice-dollar"></i>Create Epic</h1>
                 </div>
                 <!--Form goes here-->
                 <form style="margin-top: 1em; width: 50%" onsubmit="setDocument(event)">
                     <div class="form-group">
-                        <label for="name">KPI Name</label>
-                        <input required type="text" class="form-control" id="name" aria-describedby="emailHelp" placeholder="Enter KPI Name">
-                        <small id="emailHelp" class="form-text text-muted">Input the name of the KPI.</small>
+                        <label for="name">Epic Name</label>
+                        <input required type="text" class="form-control" id="name" aria-describedby="emailHelp" placeholder="Enter Epic Name">
+                        <small id="emailHelp" class="form-text text-muted">Input the name of the Epic.</small>
                     </div>
                     <div class="form-group">
-                        <label for="potential">Potential Value</label>
-                        <input required type="text" class="form-control" id="potential" aria-describedby="emailHelp" placeholder="Enter Potential Value">
-                        <small id="emailHelp" class="form-text text-muted">Input the potential value of this KPI.</small>
-                    </div>
-    
-                    <div class="form-group">
-                        <label for="actual">Actual Value</label>
-                        <input required type="text" class="form-control" id="actual" aria-describedby="emailHelp" placeholder="Enter Actual Value">
-                        <small id="emailHelp" class="form-text text-muted">Input the actual value of this KPI.</small>
+                        <label for="projected">Projected Cost</label>
+                        <input required type="text" class="form-control" id="projected" aria-describedby="emailHelp" placeholder="Enter Projected Cost">
+                        <small id="emailHelp" class="form-text text-muted">Input the projected cost of this Epic.</small>
                     </div>
     
                     <div class="form-group">
-                        <label for="goal">Goal %</label>
-                        <div class="input-group mb-3">
-                            <input required type="text" class="form-control" id="goal" aria-describedby="emailHelp" placeholder="Enter Goal Percentage">
-                            <div class="input-group-append">
-                                    <span class="input-group-text">%</span>
-                            </div>
-                        </div>
+                        <label for="actual">Actual Cost</label>
+                        <input required type="text" class="form-control" id="actual" aria-describedby="emailHelp" placeholder="Enter Actual Cost">
+                        <small id="emailHelp" class="form-text text-muted">Input the actual cost of this Epic.</small>
+                    </div>
+    
+                    <div class="form-group">
+                        <label for="le">Latest Estimate</label>
+                        <input required type="text" class="form-control" id="le" aria-describedby="emailHelp" placeholder="Enter Latest Estimate">
+                        <small id="emailHelp" class="form-text text-muted">Input the latest estimate of this Epic.</small>
                     </div>
                     <button
                         id="submitButton"
