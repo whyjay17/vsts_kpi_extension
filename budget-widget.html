@@ -4,15 +4,88 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/chart.css">
     <script src="https://d3js.org/d3.v5.min.js"></script>
-    <script type="text/javascript">
 
-
-    </script>
-
+    <script src="lib/VSS.SDK.min.js"></script>
 </head>
 <body>
         <div id="chart-container">
-            <script type="text/javascript" src="js/barchart.js"></script>
+            <script type="text/javascript">
+                VSS.init({
+                    explicitNotifyLoaded: true,
+                    usePlatformStyles: true
+                });
+                    
+                VSS.require("TFS/Dashboards/WidgetHelpers", function (WidgetHelpers) {
+                    WidgetHelpers.IncludeWidgetStyles();
+                    VSS.register("budget-bargraph-widget", function () {                
+                        return {
+                            load: function (widgetSettings) {
+                                var $title = $('h2.title');
+                                $title.text('KPI Table');
+                                return WidgetHelpers.WidgetStatusHelper.Success();
+                            }
+                        }
+                    });
+                    VSS.notifyLoadSucceeded();
+                });
+                // Get data service
+                VSS.getService(VSS.ServiceIds.ExtensionData).then(function(dataService) {
+                    // Get all document under the collection
+                    dataService.getDocuments("MyCollection3").then(function(docs) {
+                        console.log(docs);
+                        var dataObj = docs
+
+                                
+                        // Create variable for the SVG
+                        var svg = d3.select("body").append("svg")
+                                .attr("height","100%")
+                                .attr("width","100%");
+
+                        // Select, append to SVG, and add attributes to rectangles for bar chart
+                        svg.selectAll(".bar")
+                            .data(dataObj)
+                            .enter().append("rect")
+                                .attr("class", "bar")
+                                .attr("height", function(d, i) {return (d.le * 10)})
+                                .attr("width","40")
+                                .attr("x", function(d, i) {return (i * 60) + 25})
+                                .attr("y", function(d, i) {return 400 - (d.le * 10)});
+
+                        svg.selectAll(".bar3")
+                                .data(dataObj)
+                                .enter().append("rect")
+                                    .attr("class", "bar3")
+                                    .attr("height", function(d, i) {return (d.actual * 10)})
+                                    .attr("width","40")
+                                    .attr("x", function(d, i) {return (i * 60) + 25})
+                                    .attr("y", function(d, i) {return 400 - (d.actual * 10)});
+                            
+
+                        svg.selectAll(".bar2")
+                            .data(dataObj)
+                            .enter().append("rect")
+                                .attr("class", "bar2")
+                                .attr("height", function(d, i) {return (d.projected * 10)})
+                                .attr("width","40")
+                                .attr("x", function(d, i) {return (i * 60) + 25})
+                                .attr("y", function(d, i) {return 400 - (d.projected * 10)});
+
+
+                        // Select, append to SVG, and add attributes to text
+                        svg.selectAll(".text")
+                            .data(dataObj)
+                            .enter().append("text")
+                            .text(function(d) {return d.le})
+                                .attr("class", "text")
+                                .attr("x", function(d, i) {return (i * 60) + 36})
+                                .attr("y", function(d, i) {return 415 - (d.le * 10)});
+                    });
+                });
+
+//////////////////////////////
+
+
+            </script>
         </div>
 </body>
 </html>

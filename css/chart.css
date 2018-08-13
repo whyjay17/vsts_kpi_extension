@@ -5,14 +5,6 @@ html, body {
 
 /*Rectangle bar class styling*/
 
-.bar {
-  fill: #0080FF
-}
-
-.bar2 {
-  fill: red;
-}
-
 .bar:hover {
   fill: #003366
 }
@@ -22,4 +14,20 @@ html, body {
 .text {
   fill: white;
   font-family: sans-serif
+}
+
+.text2 {
+  fill: white;
+  font-family: sans-serif
+}
+.bar {
+  fill: steelblue;
+}
+
+.bar2 {
+  fill: orange;
+}
+
+.bar2 {
+  fill: red;
 }
