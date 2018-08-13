@@ -1,15 +1,80 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="css/chart.css">
-    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <head>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="css/chart.css">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <style>
+            .vertical-center, .value-box {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+            .container-fluid {
+                height: 100%;
+            }
+            .row {
+                height: 100%;
+            }
+            i {
+                color: silver;
+            }
+            i:hover {
+                color: #333;
+            }
+            p {
+                margin-top: 1em;
+                margin-bottom: 1em;
+            }
+            .max-height, center {
+                height: 100%;
+            }
+            #chart {
+                height: 100%;
+            }
+            svg {
+                overflow: auto;
+            }
+        </style>
+        <script src="https://d3js.org/d3.v5.min.js"></script>
+    </head>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-1">
+                    <h2 id="prev_button"><i class="fas fa-chevron-left vertical-center"></i></h2>
+                </div>
+                <div class="col-sm-10">
+                    <div class="row">
+                        <div class="col-sm-9">
+                            <div>
+                                <p><h4 id="epic-name">Name</h4></p>
+                            </div>
+                            <div class="value-box">
+                                <div><p>Actual:</p><p id="actual-value"></p></div>
+                                <div><p>Projected:</p><p id="projected-value"></p></div>
+                                <div><p>Latest:</p><p id="latest-value"></p></div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="max-height">
+                                <center>
+                                    <div id="chart"></div>
+                                </center>
+                            </div> 
+                        </div>
+                    </div>
 
-    <script src="lib/VSS.SDK.min.js"></script>
-</head>
-<body>
-        <div id="chart-container">
-            <script type="text/javascript">
+
+                </div>
+                <div class="col-sm-1">
+                    <h2 id="next_button"><i class="fas fa-chevron-right vertical-center"></i></h2>
+                </div>
+            </div>
+        </div>
+</html>
+        <script type="text/javascript">
+                /*
                 VSS.init({
                     explicitNotifyLoaded: true,
                     usePlatformStyles: true
@@ -28,64 +93,189 @@
                     });
                     VSS.notifyLoadSucceeded();
                 });
-                // Get data service
-                VSS.getService(VSS.ServiceIds.ExtensionData).then(function(dataService) {
-                    // Get all document under the collection
-                    dataService.getDocuments("MyCollection3").then(function(docs) {
-                        console.log(docs);
-                        var dataObj = docs
+                */
 
-                                
-                        // Create variable for the SVG
-                        var svg = d3.select("body").append("svg")
-                                .attr("height","100%")
-                                .attr("width","100%");
+                var dataObj = []
+                var i = 0;
+                for (let i = 0; i < 6; i++) {
+                    dataObj[i] = {
+                        name: `epic${i}`,
+                        potential: 5 + i,
+                        actual: 12 + (2 * i),
+                        latest: 9 + (i)
+                    }
+                }
 
-                        // Select, append to SVG, and add attributes to rectangles for bar chart
-                        svg.selectAll(".bar")
-                            .data(dataObj)
-                            .enter().append("rect")
-                                .attr("class", "bar")
-                                .attr("height", function(d, i) {return (d.le * 10)})
-                                .attr("width","40")
-                                .attr("x", function(d, i) {return (i * 60) + 25})
-                                .attr("y", function(d, i) {return 400 - (d.le * 10)});
+                function nextItem() {
+                    i = i + 1; // increase i by one
+                    i = i % dataObj.length; // if we've gone too high, start from `0` again
+                    return dataObj[i]; // give us back the item of where we are now
+                }
 
-                        svg.selectAll(".bar3")
-                                .data(dataObj)
-                                .enter().append("rect")
-                                    .attr("class", "bar3")
-                                    .attr("height", function(d, i) {return (d.actual * 10)})
-                                    .attr("width","40")
-                                    .attr("x", function(d, i) {return (i * 60) + 25})
-                                    .attr("y", function(d, i) {return 400 - (d.actual * 10)});
-                            
+                function prevItem() {
+                    if (i === 0) { // i would become 0
+                        i = dataObj.length; // so put it at the other end of the array
+                    }
+                    i = i - 1; // decrease by one
+                    return dataObj[i]; // give us back the item of where we are now
+                }
 
-                        svg.selectAll(".bar2")
-                            .data(dataObj)
-                            .enter().append("rect")
-                                .attr("class", "bar2")
-                                .attr("height", function(d, i) {return (d.projected * 10)})
-                                .attr("width","40")
-                                .attr("x", function(d, i) {return (i * 60) + 25})
-                                .attr("y", function(d, i) {return 400 - (d.projected * 10)});
-
-
-                        // Select, append to SVG, and add attributes to text
-                        svg.selectAll(".text")
-                            .data(dataObj)
-                            .enter().append("text")
-                            .text(function(d) {return d.le})
-                                .attr("class", "text")
-                                .attr("x", function(d, i) {return (i * 60) + 36})
-                                .attr("y", function(d, i) {return 415 - (d.le * 10)});
-                    });
+                window.addEventListener('load', function () {
+                    // initial value
+                    document.getElementById('epic-name').textContent = dataObj[0].name; 
+                    document.getElementById('actual-value').textContent = dataObj[0].actual;
+                    document.getElementById('projected-value').textContent = dataObj[0].potential;
+                    document.getElementById('latest-value').textContent = dataObj[0].latest;
+                    createBar(dataObj[0])
+                    
+                    document.getElementById('prev_button').addEventListener(
+                        'click', // we want to listen for a click
+                        function (e) { // the e here is the event itself
+                            document.getElementById('epic-name').textContent = prevItem().name;
+                            document.getElementById('actual-value').textContent = prevItem().actual;
+                            document.getElementById('projected-value').textContent = prevItem().potential;
+                            document.getElementById('latest-value').textContent = prevItem().latest;
+                            createBar(prevItem())
+                        }
+                    );
+                    
+                    document.getElementById('next_button').addEventListener(
+                        'click', // we want to listen for a click
+                        function (e) { // the e here is the event itself
+                            document.getElementById('epic-name').textContent = nextItem().name;
+                            document.getElementById('actual-value').textContent = nextItem().actual;
+                            document.getElementById('projected-value').textContent = nextItem().potential;
+                            document.getElementById('latest-value').textContent = nextItem().latest;
+                            createBar(nextItem())
+                        }
+                    );
                 });
 
+                function createBar(dat) {
+
+
+                    d3.select("svg").remove();
+
+
+                    console.log(dat)
+                    let obj = []
+                    obj[0] = dat
+                    // Create variable for the SVG
+                    var svg = d3.select("#chart").append("svg")
+                        .attr("height",'90%')
+                        .attr("width",'100%');
+
+                    // Select, append to SVG, and add attributes to rectangles for bar chart
+                    svg.selectAll(".bar")
+                        .data(obj)
+                        .enter().append("rect")
+                            .attr("class", "bar")
+                            .attr("height", function(d, i) {return (d.actual * 10)})
+                            .attr("width","60")
+                            .attr("x", function(d, i) {return (i * 80) + 25})
+                            .attr("y", function(d, i) {return 400 - (d.actual * 10)});
+
+                    svg.selectAll(".bar3")
+                            .data(obj)
+                            .enter().append("rect")
+                                .attr("class", "bar3")
+                                .attr("height", function(d, i) {return (d.latest * 10)})
+                                .attr("width","60")
+                                .attr("x", function(d, i) {return (i * 80) + 25})
+                                .attr("y", function(d, i) {return 400 - (d.latest * 10)});
+                        
+                    svg.selectAll(".bar2")
+                        .data(obj)
+                        .enter().append("rect")
+                            .attr("class", "bar2")
+                            .attr("height", function(d, i) {return (d.potenial * 10)})
+                            .attr("width","60")
+                            .attr("x", function(d, i) {return (i * 80) + 25})
+                            .attr("y", function(d, i) {return 400 - (d.potenial * 10)});
+
+                    // Select, append to SVG, and add attributes to text
+                    svg.selectAll(".text")
+                        .data(obj)
+                        .enter().append("text")
+                        .text(function(d) {return d.actual})
+                            .attr("class", "text")
+                            .attr("x", function(d, i) {return (i * 80) + 41})
+                            .attr("y", function(d, i) {return 415 - (d.actual * 10)});
+            
+                }
+
+            /*
+            VSS.init({
+                explicitNotifyLoaded: true,
+                usePlatformStyles: true
+            });
+                
+            VSS.require("TFS/Dashboards/WidgetHelpers", function (WidgetHelpers) {
+                WidgetHelpers.IncludeWidgetStyles();
+                VSS.register("budget-bargraph-widget", function () {                
+                    return {
+                        load: function (widgetSettings) {
+                            var $title = $('h2.title');
+                            $title.text('KPI Table');
+                            return WidgetHelpers.WidgetStatusHelper.Success();
+                        }
+                    }
+                });
+                VSS.notifyLoadSucceeded();
+            });
+            // Get data service
+            VSS.getService(VSS.ServiceIds.ExtensionData).then(function(dataService) {
+                // Get all document under the collection
+                dataService.getDocuments("MyCollection3").then(function(docs) {
+                    console.log(docs);
+                    var dataObj = docs
+
+                            
+                    // Create variable for the SVG
+                    var svg = d3.select("body").append("svg")
+                            .attr("height","100%")
+                            .attr("width","100%");
+
+                    // Select, append to SVG, and add attributes to rectangles for bar chart
+                    svg.selectAll(".bar")
+                        .data(dataObj)
+                        .enter().append("rect")
+                            .attr("class", "bar")
+                            .attr("height", function(d, i) {return (d.le * 10)})
+                            .attr("width","40")
+                            .attr("x", function(d, i) {return (i * 60) + 25})
+                            .attr("y", function(d, i) {return 400 - (d.le * 10)});
+
+                    svg.selectAll(".bar3")
+                            .data(dataObj)
+                            .enter().append("rect")
+                                .attr("class", "bar3")
+                                .attr("height", function(d, i) {return (d.actual * 10)})
+                                .attr("width","40")
+                                .attr("x", function(d, i) {return (i * 60) + 25})
+                                .attr("y", function(d, i) {return 400 - (d.actual * 10)});
+                        
+
+                    svg.selectAll(".bar2")
+                        .data(dataObj)
+                        .enter().append("rect")
+                            .attr("class", "bar2")
+                            .attr("height", function(d, i) {return (d.projected * 10)})
+                            .attr("width","40")
+                            .attr("x", function(d, i) {return (i * 60) + 25})
+                            .attr("y", function(d, i) {return 400 - (d.projected * 10)});
+
+
+                    // Select, append to SVG, and add attributes to text
+                    svg.selectAll(".text")
+                        .data(dataObj)
+                        .enter().append("text")
+                        .text(function(d) {return d.le})
+                            .attr("class", "text")
+                            .attr("x", function(d, i) {return (i * 60) + 36})
+                            .attr("y", function(d, i) {return 415 - (d.le * 10)});
+                });
+            });
+*/
 //////////////////////////////
-
-
-            </script>
-        </div>
-</body>
-</html>
+        </script>

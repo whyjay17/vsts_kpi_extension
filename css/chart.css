@@ -16,10 +16,6 @@ html, body {
   font-family: sans-serif
 }
 
-.text2 {
-  fill: white;
-  font-family: sans-serif
-}
 .bar {
   fill: steelblue;
 }
@@ -28,6 +24,6 @@ html, body {
   fill: orange;
 }
 
-.bar2 {
-  fill: red;
+.bar3 {
+  fill: mediumseagreen;
 }
