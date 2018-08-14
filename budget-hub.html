@@ -9,7 +9,7 @@
 
         function setDocument(event) {
             event.preventDefault();
-
+            const collectionName = `${VSS.getWebContext().project.name}_budget_test`;
             if (document.getElementById("docId").value == "") {
                 VSS.getService(VSS.ServiceIds.ExtensionData).then(function(dataService) {
                 // Prepare document first
@@ -21,8 +21,7 @@
                     start: document.getElementById("start").value,
                     end: document.getElementById("end").value
                 };
-                console.log('date', typeof(document.getElementById("start").value));
-                dataService.createDocument("MyCollection3", newDoc).then(function(doc) {
+                dataService.createDocument(collectionName, newDoc).then(function(doc) {
                 // Even if no ID was passed to createDocument, one will be generated
                 console.log(doc);
                 location.reload();
@@ -30,11 +29,10 @@
             });
             } else {
                 VSS.getService(VSS.ServiceIds.ExtensionData).then(function(dataService) {
-                    var collection = "MyCollection3";
                     var docId = document.getElementById("docId").value;
                     console.log('doc id in update', document.getElementById("docId").value)
                     // Get document first
-                    dataService.getDocument("MyCollection3", docId).then(function(doc) {
+                    dataService.getDocument(collectionName, docId).then(function(doc) {
                         // Update the document
                         doc.name = document.getElementById("name").value;
                         doc.projected = document.getElementById("projected").value;
@@ -42,8 +40,7 @@
                         doc.le = document.getElementById("le").value;
                         doc.start = document.getElementById("start").value;
                         doc.end = document.getElementById("end").value;
-
-                        dataService.updateDocument("MyCollection3", doc).then(function(d) {
+                        dataService.updateDocument(collectionName, doc).then(function(d) {
                             // Check the new version
                             console.log("Doc version: " + d.__etag);
                             console.log(doc);
@@ -56,10 +53,12 @@
 
         function deleteDocument(doc) {
             event.preventDefault();
-            VSS.getService(VSS.ServiceIds.ExtensionData).then(function(dataService) {
 
+            const collectionName = `${VSS.getWebContext().project.name}_budget_test`;
+
+            VSS.getService(VSS.ServiceIds.ExtensionData).then(function(dataService) {
                 // Delete document
-                dataService.deleteDocument("MyCollection3", document.getElementById("docId").value).then(function() {
+                dataService.deleteDocument(collectionName, document.getElementById("docId").value).then(function() {
                     console.log("Doc deleted");
                     location.reload();
                 });
@@ -96,56 +95,65 @@
         }
 
         VSS.init();
-        const items = {};
-    
-        // Get data service and display
-        VSS.getService(VSS.ServiceIds.ExtensionData)
-        // the callback on the next line returns x` promise, which the JavaScript engine will follow, so you don't need to nest the next `then`
-        .then((dataService) => dataService.getDocuments('MyCollection3'))
-        .then((docs) => {
-            // keep a reference to the element instead of searching for it in each loop.
-            const container = document.getElementById('items');
 
-            // this loop will remove any existing children
-            while (container.firstChild !== null) {
-                container.removeChild(container.firstChild);
-            }
-
-            for (const doc of docs) {
-                // create a `div` element
-                const div = document.createElement("li");
-                div.classList.add("list-group-item");
-                div.style.border = "none";
-
-                // add a text node to it
-                div.appendChild(document.createTextNode(doc.name));
-
-                div.addEventListener("click", e => {
-                    updateInput(doc);
-                 });
-
-                container.appendChild(div);
-            }
-
-                //get all the elements with calss list-group-item
-                [...document.querySelectorAll('.list-group-item')].forEach(function(item) {
-                    // iterate and add event lstener to each of them
-                    item.addEventListener('click', function(elem) {
-                        // check if any element have a class active
-                        // if so then remove the class from it
-                        let getElemWithClass = document.querySelector('.clicked');
-                        if (getElemWithClass !== null) {
-                            getElemWithClass.classList.remove('clicked');
-                        }
-                        //add the active class to the element from which click event triggered
-                        item.classList.add('clicked')
+        // Sets unique data storage name for each project
+        function setDBName() {
+            return new Promise(function(resolve, reject) {
+                    VSS.ready(function(){
+                        let web = VSS.getWebContext();
+                        resolve(web);
                     })
-                })
+            })
+        }
 
-
-
-        });
-
+        // Will get called when VSS is ready
+        setDBName()
+            .then(function(res){
+                // Gets the Web Context Info: Like Project Name
+                const items = {};
+                const collectionName = `${res.project.name}_budget_test`;
+                // Get data service and display
+                VSS.getService(VSS.ServiceIds.ExtensionData)
+                // the callback on the next line returns a promise, which the JavaScript engine will follow, so you don't need to nest the next `then`
+                .then((dataService) => dataService.getDocuments(collectionName))
+                .then((docs) => {
+                    // keep a reference to the element instead of searching for it in each loop.
+                    const container = document.getElementById('items');
+                    // this loop will remove any existing children
+                    while (container.firstChild !== null) {
+                        container.removeChild(container.firstChild);
+                    }
+                    for (const doc of docs) {
+                        // create a `div` element
+                        const div = document.createElement("li");
+                        div.classList.add("list-group-item");
+                        div.style.border = "none";
+                        // add a text node to it
+                        div.appendChild(document.createTextNode(doc.name));
+                        div.addEventListener("click", e => {
+                            updateInput(doc);
+                        });
+                        container.appendChild(div);
+                    }
+                        //get all the elements with calss list-group-item
+                        [...document.querySelectorAll('.list-group-item')].forEach(function(item) {
+                            // iterate and add event lstener to each of them
+                            item.addEventListener('click', function(elem) {
+                                // check if any element have a class active
+                                // if so then remove the class from it
+                                let getElemWithClass = document.querySelector('.clicked');
+                                if (getElemWithClass !== null) {
+                                    getElemWithClass.classList.remove('clicked');
+                                }
+                                //add the active class to the element from which click event triggered
+                                item.classList.add('clicked')
+                            })
+                        })
+                });
+            })
+            .catch(function(err){
+                console.log('err', err)
+            })
     </script>
 </head>
 
