@@ -2,7 +2,7 @@
     "manifestVersion": 1,
     "id": "budget-tracking-package",
     "publisher": "YJ",
-    "version": "0.0.91",
+    "version": "0.0.94",
     "name": "Budget Tracking Package",
     "description": "An extension for Microsoft's Visual Studio Team Services (VSTS), which is a cloud service for collaborating on code development, to manage track budget within an organization.",
     "public": false,
