@@ -39,42 +39,46 @@
                 overflow: auto;
                 margin-top: 4.0em;
             }
+            .value-box {
+                margin-left: 2em;
+            }
+            #epic-name {
+                margin-top: 1.5em;
+            }
         </style>
         <script src="https://d3js.org/d3.v5.min.js"></script>
     </head>
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-sm-1">
-                    <h2 id="prev_button"><i class="fas fa-chevron-left vertical-center"></i></h2>
-                </div>
-                <div class="col-sm-10">
-                    <div class="row">
-                        <div class="col-sm-7">
-                            <div>
-                                <p><h4 id="epic-name">Name</h4></p>
-                            </div>
-                            <div class="value-box">
-                                <div><p>Actual:</p><p id="actual-value"></p></div>
-                                <div><p>Projected:</p><p id="projected-value"></p></div>
-                                <div><p>Latest:</p><p id="latest-value"></p></div>
-                            </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-1">
+                <h2 id="prev_button"><i class="fas fa-chevron-circle-left vertical-center"></i></h2>
+            </div>
+            <div class="col-sm-10">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div>
+                            <p><h4 id="epic-name">Name</h4></p>
                         </div>
-                        <div class="col-sm-5">
-                            <div class="max-height">
-                                <center>
-                                    <div id="chart"></div>
-                                </center>
-                            </div> 
+                        <div class="value-box">
+                            <div><i id="blue" class="fas fa-square"></i><p style="display: inline-block;">Actual:</p><p style="display: inline-block;" id="actual-value"></p></div>
+                            <div><i id="orange" class="fas fa-square"></i><p style="display: inline-block;">Projected:</p><p style="display: inline-block;" id="projected-value"></p></div>
+                            <div><i id="green" class="fas fa-square"></i><p style="display: inline-block;">Latest:</p><p style="display: inline-block;" id="latest-value"></p></div>
                         </div>
                     </div>
-
-
-                </div>
-                <div class="col-sm-1">
-                    <h2 id="next_button"><i class="fas fa-chevron-right vertical-center"></i></h2>
+                    <div class="col-sm-4">
+                        <div class="max-height">
+                            <center>
+                                <div id="chart"></div>
+                            </center>
+                        </div> 
+                    </div>
                 </div>
             </div>
+            <div class="col-sm-1">
+                <h2 id="next_button"><i class="fas fa-chevron-circle-right vertical-center"></i></h2>
+            </div>
         </div>
+    </div>
 </html>
         <script type="text/javascript">
 
@@ -98,25 +102,25 @@
                 });
 
                 let dataObj = [];
+                var i = 0;
 
-                function delay() {
+                // Need an async function to assign doc values to object correctly
+                function asyncItemAssignment() {
                     return new Promise(function(resolve, reject) {
-                         // Get data service and display
-                    VSS.getService(VSS.ServiceIds.ExtensionData)
-                        // the callback on the next line returns x` promise, which the JavaScript engine will follow, so you don't need to nest the next `then`
-                        .then((dataService) => dataService.getDocuments('MyCollection3'))
-                        .then((docs) => {   
-                            resolve(docs);
-                        })
+                        // Get data service and display
+                        VSS.getService(VSS.ServiceIds.ExtensionData)
+                            // the callback on the next line returns x` promise, which the JavaScript engine will follow, so you don't need to nest the next `then`
+                            .then((dataService) => dataService.getDocuments('MyCollection3'))
+                            .then((docs) => {   
+                                resolve(docs);
+                            })
                     });
                 }
 
-                delay()
+                asyncItemAssignment()
                     .then(function(docs) {
 
                             // keep a reference to the element instead of searching for it in each loop.
-                            console.log('promised', docs)
-
                             for (let doc of docs) {
                                 dataObj.push({
                                     name: doc.name,
@@ -129,6 +133,7 @@
                             }
                             console.log(dataObj)
 
+                            // Sort by most recent end-date
                             function compareDate(a,b) {
                                 if (a.end < b.end)
                                     return -1;
@@ -138,8 +143,6 @@
                             }
 
                             dataObj.sort(compareDate);
-
-                            console.log('sorted', dataObj)
 
                             document.getElementById('epic-name').textContent = dataObj[0].name; 
                             document.getElementById('actual-value').textContent = dataObj[0].actual;
@@ -172,42 +175,11 @@
                                     createBar(dataObj[i])
                                 }
                             );
-                      
-
                     })
                     .catch(function(err){
                         console.log(err)
                     })
-
-                // Get data service and display
-                VSS.getService(VSS.ServiceIds.ExtensionData)
-                    // the callback on the next line returns x` promise, which the JavaScript engine will follow, so you don't need to nest the next `then`
-                    .then((dataService) => dataService.getDocuments('MyCollection3'))
-                    .then((docs) => {   
-
-                        let promiseArr = []
-                        // keep a reference to the element instead of searching for it in each loop.
-                        console.log(docs)
-
-                        for (let doc of docs) {
-                            promiseArr.push({
-                                name: doc.name,
-                                projected: doc.projected,
-                                actual: doc.actual,
-                                le: doc.le,
-                            })
-                        }
-                        return Promise.all(promiseArr)
-                        console.log(promiseArr)
-                    })
-                    .then(data => {
-                        dataObj = data;
-                    })
       
-
-                var i = 0;
-
-                console.log('fin', dataObj)
                 function nextItem() {
                     i = i + 1; // increase i by one
                     i = i % dataObj.length; // if we've gone too high, start from `0` again
@@ -293,7 +265,7 @@
                         .enter().append("rect")
                             .attr("class", biggesteClass)
                             .attr("height", function(d, i) {return (biggestVal * 10)})
-                            .attr("width","100")
+                            .attr("width","150")
                             .attr("x", function(d, i) {return (i * 80) + 25})
                             .attr("y", function(d, i) {return 280 - (biggestVal * 10)});    
 
@@ -302,7 +274,7 @@
                         .enter().append("rect")
                             .attr("class", secondClass)
                             .attr("height", function(d, i) {return (secondVal * 10)})
-                            .attr("width","100")
+                            .attr("width","150")
                             .attr("x", function(d, i) {return (i * 80) + 25})
                             .attr("y", function(d, i) {return 280 - (secondVal * 10)}); 
 
@@ -311,7 +283,7 @@
                         .enter().append("rect")
                             .attr("class", thirdClass)
                             .attr("height", function(d, i) {return (thirdVal * 10)})
-                            .attr("width","100")
+                            .attr("width","150")
                             .attr("x", function(d, i) {return (i * 80) + 25})
                             .attr("y", function(d, i) {return 280 - (thirdVal * 10)}); 
 
@@ -322,7 +294,7 @@
                         .enter().append("text")
                         .text(function(d) {return d.actual})
                             .attr("class", "text")
-                            .attr("x", function(d, i) {return 66})
+                            .attr("x", function(d, i) {return 93})
                             .attr("y", function(d, i) {return 295 - (d.actual * 10)});
 
                     // Select, append to SVG, and add attributes to text
@@ -331,7 +303,7 @@
                         .enter().append("text")
                         .text(function(d) {return d.projected})
                             .attr("class", "text2")
-                            .attr("x", function(d, i) {return 66})
+                            .attr("x", function(d, i) {return 93})
                             .attr("y", function(d, i) {return 295 - (d.projected * 10)});
 
                     // Select, append to SVG, and add attributes to text
@@ -340,83 +312,7 @@
                         .enter().append("text")
                         .text(function(d) {return d.le})
                             .attr("class", "text3")
-                            .attr("x", function(d, i) {return 66})
+                            .attr("x", function(d, i) {return 93})
                             .attr("y", function(d, i) {return 295 - (d.le * 10)});
-            
                 }
-
-            /*
-            VSS.init({
-                explicitNotifyLoaded: true,
-                usePlatformStyles: true
-            });
-                
-            VSS.require("TFS/Dashboards/WidgetHelpers", function (WidgetHelpers) {
-                WidgetHelpers.IncludeWidgetStyles();
-                VSS.register("budget-bargraph-widget", function () {                
-                    return {
-                        load: function (widgetSettings) {
-                            var $title = $('h2.title');
-                            $title.text('KPI Table');
-                            return WidgetHelpers.WidgetStatusHelper.Success();
-                        }
-                    }
-                });
-                VSS.notifyLoadSucceeded();
-            });
-            // Get data service
-            VSS.getService(VSS.ServiceIds.ExtensionData).then(function(dataService) {
-                // Get all document under the collection
-                dataService.getDocuments("MyCollection3").then(function(docs) {
-                    console.log(docs);
-                    var dataObj = docs
-
-                            
-                    // Create variable for the SVG
-                    var svg = d3.select("body").append("svg")
-                            .attr("height","100%")
-                            .attr("width","100%");
-
-                    // Select, append to SVG, and add attributes to rectangles for bar chart
-                    svg.selectAll(".bar")
-                        .data(dataObj)
-                        .enter().append("rect")
-                            .attr("class", "bar")
-                            .attr("height", function(d, i) {return (d.le * 10)})
-                            .attr("width","40")
-                            .attr("x", function(d, i) {return (i * 60) + 25})
-                            .attr("y", function(d, i) {return 400 - (d.le * 10)});
-
-                    svg.selectAll(".bar3")
-                            .data(dataObj)
-                            .enter().append("rect")
-                                .attr("class", "bar3")
-                                .attr("height", function(d, i) {return (d.actual * 10)})
-                                .attr("width","40")
-                                .attr("x", function(d, i) {return (i * 60) + 25})
-                                .attr("y", function(d, i) {return 400 - (d.actual * 10)});
-                        
-
-                    svg.selectAll(".bar2")
-                        .data(dataObj)
-                        .enter().append("rect")
-                            .attr("class", "bar2")
-                            .attr("height", function(d, i) {return (d.projected * 10)})
-                            .attr("width","40")
-                            .attr("x", function(d, i) {return (i * 60) + 25})
-                            .attr("y", function(d, i) {return 400 - (d.projected * 10)});
-
-
-                    // Select, append to SVG, and add attributes to text
-                    svg.selectAll(".text")
-                        .data(dataObj)
-                        .enter().append("text")
-                        .text(function(d) {return d.le})
-                            .attr("class", "text")
-                            .attr("x", function(d, i) {return (i * 60) + 36})
-                            .attr("y", function(d, i) {return 415 - (d.le * 10)});
-                });
-            });
-*/
-//////////////////////////////
         </script>
