@@ -10,7 +10,6 @@
 			usePlatformStyles: true
         });
 
-               
         VSS.require("TFS/Dashboards/WidgetHelpers", function (WidgetHelpers) {
 			WidgetHelpers.IncludeWidgetStyles();
             VSS.register("kpi-widget", function () {                
@@ -25,56 +24,76 @@
             VSS.notifyLoadSucceeded();
         });
 
-        // Get data service
-        VSS.getService(VSS.ServiceIds.ExtensionData).then(function(dataService) {
-            // Get all document under the collection
-            dataService.getDocuments("MyCollection2").then(function(docs) {
-                console.log(docs);
-            });
-        });
+        // Sets unique data storage name for each project
+        function setDBName() {
+            return new Promise(function(resolve, reject) {
+
+                    VSS.ready(function(){
+                        let web = VSS.getWebContext();
+                        resolve(web);
+                    })
+            })
+        }
+
+        // Will get called when VSS is ready
+        setDBName()
+            .then(function(res){
+
+                // Gets the Web Context Info: Like Project Name
+                const collectionName = `${res.project.name}_test`;
+
+                // Get data service
+                VSS.getService(VSS.ServiceIds.ExtensionData).then(function(dataService) {
+                    // Get all document under the collection
+                    dataService.getDocuments(collectionName).then(function(docs) {
+                        console.log(docs);
+                    });
+                });
        
+                VSS.getService(VSS.ServiceIds.ExtensionData)
+                // the callback on the next line returns a promise, which the JavaScript engine will follow, so you don't need to nest the next `then`
+                    .then((dataService) => dataService.getDocuments(collectionName))
+                    .then((docs) => {
+                        // keep a reference to the element instead of searching for it in each loop.
+                        const table = document.getElementById("kpiTable");
 
+                        // `for...of` is a simpler way to iterate over a collection
+                        for (const doc of docs) {
+                            var row = table.insertRow(1);
+                            var KPIs = row.insertCell(0);
+                            var actual = row.insertCell(1);
+                            var potential = row.insertCell(2);
+                            var goalPercent = row.insertCell(3);
+                            var actualPercent = row.insertCell(4);
+                            KPIs.innerHTML = doc.name;
+                            actual.innerHTML = doc.actual;
+                            potential.innerHTML = doc.potential;
+                            goalPercent.innerHTML = doc.goal + " %";
+                            actualPercent.innerHTML = ((doc.actual / doc.potential) * 100).toFixed(2) + " %";
 
-        VSS.getService(VSS.ServiceIds.ExtensionData)
-        // the callback on the next line returns a promise, which the JavaScript engine will follow, so you don't need to nest the next `then`
-            .then((dataService) => dataService.getDocuments('MyCollection2'))
-            .then((docs) => {
-                // keep a reference to the element instead of searching for it in each loop.
-                const table = document.getElementById("kpiTable");
+                            difference = (((doc.actual / doc.potential) * 100).toFixed(2) - doc.goal).toFixed(2)
+                            
+                            const diffElem = document.createElement("p");
+                            diffElem.classList.add("inline");
+                            diffElem.appendChild(document.createTextNode(` (${difference} %)`));
+                            diffElem.classList.add
 
-                // `for...of` is a simpler way to iterate over a collection
-                for (const doc of docs) {
-                    var row = table.insertRow(1);
-                    var KPIs = row.insertCell(0);
-                    var actual = row.insertCell(1);
-                    var potential = row.insertCell(2);
-                    var goalPercent = row.insertCell(3);
-                    var actualPercent = row.insertCell(4);
-                    KPIs.innerHTML = doc.name;
-                    actual.innerHTML = doc.actual;
-                    potential.innerHTML = doc.potential;
-                    goalPercent.innerHTML = doc.goal + " %";
-                    actualPercent.innerHTML = ((doc.actual / doc.potential) * 100).toFixed(2) + " %";
-
-                    difference = (((doc.actual / doc.potential) * 100).toFixed(2) - doc.goal).toFixed(2)
-                       
-                    const diffElem = document.createElement("p");
-                    diffElem.classList.add("inline");
-                    diffElem.appendChild(document.createTextNode(` (${difference} %)`));
-                    diffElem.classList.add
-
-                    if (parseFloat(difference) < 0) {
-                        diffElem.classList.add("red");
-                        actualPercent.appendChild(diffElem)
-                    } else if (0 <= parseFloat(difference) && parseFloat(difference) <= 10) {
-                        diffElem.classList.add("yellow");
-                        actualPercent.appendChild(diffElem)
-                    } else {
-                        diffElem.classList.add("green");
-                        actualPercent.appendChild(diffElem)
-                    }
-                }
-            });
+                            if (parseFloat(difference) < 0) {
+                                diffElem.classList.add("red");
+                                actualPercent.appendChild(diffElem)
+                            } else if (0 <= parseFloat(difference) && parseFloat(difference) <= 10) {
+                                diffElem.classList.add("yellow");
+                                actualPercent.appendChild(diffElem)
+                            } else {
+                                diffElem.classList.add("green");
+                                actualPercent.appendChild(diffElem)
+                            }
+                        }
+                    });
+            })
+            .catch(function(err){
+                console.log('err', err)
+            })
 
             function sortTable(n) {
                 var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
