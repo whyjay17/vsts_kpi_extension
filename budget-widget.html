@@ -37,6 +37,7 @@
             }
             svg {
                 overflow: auto;
+                margin-top: 4.0em;
             }
         </style>
         <script src="https://d3js.org/d3.v5.min.js"></script>
@@ -56,6 +57,11 @@
                                 <div><p>Actual:</p><p id="actual-value"></p></div>
                                 <div><p>Projected:</p><p id="projected-value"></p></div>
                                 <div><p>Latest:</p><p id="latest-value"></p></div>
+                            </div>
+                            <div id="legend2">
+                                <div class="legend2"> <p class="country-name"><span class="key-dot queens"></span>Queens</p> </div>
+                                <div class="legend2"> <p class="country-name"><span class="key-dot kings"></span>Kings</p> </div>
+                                <div class="legend2"> <p class="country-name"><span class="key-dot bronx"></span>Bronx</p> </div>
                             </div>
                         </div>
                         <div class="col-sm-5">
@@ -225,45 +231,94 @@
 
                 function createBar(dat) {
 
-
                     d3.select("svg").remove();
 
-
-                    console.log(dat)
                     let obj = []
                     obj[0] = dat
+
+                    let biggesteClass = '';
+                    let biggestVal = 0;
+                    let secondClass = '';
+                    let secondVal = 0;
+                    let thirdClass = '';
+                    let thirdVal = 0;
+
                     // Create variable for the SVG
                     var svg = d3.select("#chart").append("svg")
                         .attr("height", '110em')
                         .attr("width", '110em');
 
+                    if (parseInt(obj[0].actual) > parseInt(obj[0].projected) && parseInt(obj[0].projected) > parseInt(obj[0].le)) {
+                        biggesteClass = 'bar';
+                        biggestVal = obj[0].actual;
+                        secondClass ='bar2';
+                        secondVal = obj[0].projected;
+                        thirdClass ='bar3';
+                        thirdVal = obj[0].le;
+                    } else if (parseInt(obj[0].actual) > parseInt(obj[0].le) && parseInt(obj[0].le) > parseInt(obj[0].projected)) {
+                        biggesteClass = 'bar';
+                        biggestVal = obj[0].actual;
+                        secondClass = 'bar3';
+                        secondVal = obj[0].le;
+                        thirdClass ='bar2';
+                        thirdVal = obj[0].projected;
+                    } else if (parseInt(obj[0].projected) > parseInt(obj[0].actual) && parseInt(obj[0].actual) > parseInt(obj[0].le)) {
+                        biggesteClass = 'bar2';
+                        biggestVal = obj[0].projected;
+                        secondClass ='bar';
+                        secondVal = obj[0].actual;
+                        thirdClass ='bar3';
+                        thirdVal = obj[0].le;
+                    }  else if (parseInt(obj[0].projected) > parseInt(obj[0].le) && parseInt(obj[0].le) > parseInt(obj[0].actual)) {
+                        biggesteClass = 'bar2';
+                        biggestVal = obj[0].projected;
+                        secondClass ='bar3';
+                        secondVal = obj[0].le;
+                        thirdClass ='bar';
+                        thirdVal = parseInt(obj[0].actual);
+                    } else if (parseInt(obj[0].le) > parseInt(obj[0].actual) && parseInt(obj[0].actual) > parseInt(obj[0].projected)) {
+                        biggesteClass = 'bar3';
+                        biggestVal = obj[0].le;
+                        secondClass ='bar';
+                        secondVal = obj[0].actual;
+                        thirdClass ='bar2';
+                        thirdVal = obj[0].projected;
+                    } else {
+                        biggesteClass = 'bar3';
+                        biggestVal = obj[0].le;
+                        secondClass ='bar2';
+                        secondVal = obj[0].projected;
+                        thirdClass ='bar';
+                        thirdVal = obj[0].actual;
+                    }
+
                     // Select, append to SVG, and add attributes to rectangles for bar chart
-                    svg.selectAll(".bar")
+                    svg.selectAll("." + biggesteClass)
                         .data(obj)
                         .enter().append("rect")
-                            .attr("class", "bar")
-                            .attr("height", function(d, i) {return (d.actual * 10)})
-                            .attr("width","60")
+                            .attr("class", biggesteClass)
+                            .attr("height", function(d, i) {return (biggestVal * 10)})
+                            .attr("width","100")
                             .attr("x", function(d, i) {return (i * 80) + 25})
-                            .attr("y", function(d, i) {return 400 - (d.actual * 10)});    
+                            .attr("y", function(d, i) {return 280 - (biggestVal * 10)});    
 
-                    svg.selectAll(".bar2")
+                    svg.selectAll("." + secondClass)
                         .data(obj)
                         .enter().append("rect")
-                            .attr("class", "bar2")
-                            .attr("height", function(d, i) {return (d.potenial * 10)})
-                            .attr("width","60")
+                            .attr("class", secondClass)
+                            .attr("height", function(d, i) {return (secondVal * 10)})
+                            .attr("width","100")
                             .attr("x", function(d, i) {return (i * 80) + 25})
-                            .attr("y", function(d, i) {return 400 - (d.potenial * 10)});
+                            .attr("y", function(d, i) {return 280 - (secondVal * 10)}); 
 
-                    svg.selectAll(".bar3")
-                            .data(obj)
-                            .enter().append("rect")
-                                .attr("class", "bar3")
-                                .attr("height", function(d, i) {return (d.latest * 10)})
-                                .attr("width","60")
-                                .attr("x", function(d, i) {return (i * 80) + 25})
-                                .attr("y", function(d, i) {return 400 - (d.latest * 10)});
+                    svg.selectAll("." + thirdClass)
+                        .data(obj)
+                        .enter().append("rect")
+                            .attr("class", thirdClass)
+                            .attr("height", function(d, i) {return (thirdVal * 10)})
+                            .attr("width","100")
+                            .attr("x", function(d, i) {return (i * 80) + 25})
+                            .attr("y", function(d, i) {return 280 - (thirdVal * 10)}); 
 
 
                     // Select, append to SVG, and add attributes to text
@@ -272,8 +327,26 @@
                         .enter().append("text")
                         .text(function(d) {return d.actual})
                             .attr("class", "text")
-                            .attr("x", function(d, i) {return (i * 80) + 41})
-                            .attr("y", function(d, i) {return 415 - (d.actual * 10)});
+                            .attr("x", function(d, i) {return 66})
+                            .attr("y", function(d, i) {return 295 - (d.actual * 10)});
+
+                    // Select, append to SVG, and add attributes to text
+                    svg.selectAll(".text2")
+                        .data(obj)
+                        .enter().append("text")
+                        .text(function(d) {return d.projected})
+                            .attr("class", "text2")
+                            .attr("x", function(d, i) {return 66})
+                            .attr("y", function(d, i) {return 295 - (d.projected * 10)});
+
+                    // Select, append to SVG, and add attributes to text
+                    svg.selectAll(".text3")
+                        .data(obj)
+                        .enter().append("text")
+                        .text(function(d) {return d.le})
+                            .attr("class", "text3")
+                            .attr("x", function(d, i) {return 66})
+                            .attr("y", function(d, i) {return 295 - (d.le * 10)});
             
                 }
 

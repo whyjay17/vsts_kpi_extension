@@ -6,12 +6,30 @@ html, body {
 /*Rectangle bar class styling*/
 
 .bar:hover {
-  fill: #003366
+  fill: #003366;
+}
+
+.bar2:hover {
+  fill:coral;
+}
+
+.bar3:hover {
+  fill: darkgreen;
 }
 
 /*Text class styling*/
 
 .text {
+  fill: white;
+  font-family: sans-serif
+}
+
+.text2{
+  fill: white;
+  font-family: sans-serif
+}
+
+.text3 {
   fill: white;
   font-family: sans-serif
 }
