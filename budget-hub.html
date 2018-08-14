@@ -17,8 +17,11 @@
                     name: document.getElementById("name").value,
                     projected: document.getElementById("projected").value,
                     actual: document.getElementById("actual").value,
-                    le: document.getElementById("le").value
+                    le: document.getElementById("le").value,
+                    start: document.getElementById("start").value,
+                    end: document.getElementById("end").value
                 };
+                console.log('date', typeof(document.getElementById("start").value));
                 dataService.createDocument("MyCollection3", newDoc).then(function(doc) {
                 // Even if no ID was passed to createDocument, one will be generated
                 console.log(doc);
@@ -37,6 +40,8 @@
                         doc.projected = document.getElementById("projected").value;
                         doc.actual = document.getElementById("actual").value;
                         doc.le = document.getElementById("le").value;
+                        doc.start = document.getElementById("start").value;
+                        doc.end = document.getElementById("end").value;
 
                         dataService.updateDocument("MyCollection3", doc).then(function(d) {
                             // Check the new version
@@ -72,6 +77,8 @@
             document.getElementById("projected").value =  "";
             document.getElementById("actual").value =  "";
             document.getElementById("le").value =  "";
+            document.getElementById("start").value =  "";
+            document.getElementById("end").value =  "";
         }
 
         function updateInput(doc) {
@@ -84,6 +91,8 @@
             document.getElementById("actual").value = doc.actual;
             document.getElementById("projected").value = doc.projected;
             document.getElementById("le").value = doc.le;
+            document.getElementById("start").value = doc.start;
+            document.getElementById("end").value = doc.end;
         }
 
         VSS.init();
@@ -117,10 +126,6 @@
 
                 container.appendChild(div);
             }
-            
-                // add event listeners to change its background
-                //div.addEventListener("mouseover", e => { div.style.background = "#e9ecef"; });
-                //div.addEventListener("mouseout", e => { div.style.background = "white"; });
 
                 //get all the elements with calss list-group-item
                 [...document.querySelectorAll('.list-group-item')].forEach(function(item) {
@@ -186,6 +191,16 @@
                         <label for="le">Latest Estimate</label>
                         <input required type="text" class="form-control" id="le" aria-describedby="emailHelp" placeholder="Enter Latest Estimate">
                         <small id="emailHelp" class="form-text text-muted">Input the latest estimate of this Epic.</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="start">Start Date</label>
+                        <input required type="date" class="form-control" id="start" aria-describedby="emailHelp" placeholder="Enter Start Date">
+                        <small id="emailHelp" class="form-text text-muted">Input the start date of this Epic.</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="end">End Date</label>
+                        <input required type="date" class="form-control" id="end" aria-describedby="emailHelp" placeholder="Enter End Date">
+                        <small id="emailHelp" class="form-text text-muted">Input the end date of this Epic.</small>
                     </div>
                     <button
                         id="submitButton"
