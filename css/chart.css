@@ -131,3 +131,7 @@ svg {
   padding: 5px;
   text-align: center;
 }
+
+.axis--x path {
+  display: none;
+}

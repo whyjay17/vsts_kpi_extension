@@ -209,7 +209,7 @@
                             .attr("height", function(d, i) {return (obj[0].orig * 5)})
                             .attr("width", 60)
                             .attr("x", function(d, i) {return (i * 80)})
-                            .attr("y", function(d, i) {return 285 - (obj[0].orig * 5)})    
+                            .attr("y", function(d, i) {0})    
                             .on("mousemove", function(d){
                                 tooltip
                                 .style("left", d3.event.pageX - 50 + "px")
@@ -226,7 +226,7 @@
                             .attr("height", function(d, i) {return (obj[0].le * 5)})
                             .attr("width", 60)
                             .attr("x", function(d, i) {return (i * 80) + 60})
-                            .attr("y", function(d, i) {return 285 - (obj[0].le * 5)})   
+                            .attr("y", function(d, i) {0})      
                             .on("mousemove", function(d){
                                 tooltip
                                 .style("left", d3.event.pageX - 50 + "px")
@@ -243,7 +243,7 @@
                             .attr("height", function(d, i) {return (obj[0].ctd * 5)})
                             .attr("width", 60)
                             .attr("x", function(d, i) {return (i * 80) + (2 * 60)})
-                            .attr("y", function(d, i) {return 285 - (obj[0].ctd * 5)})  
+                            .attr("y", function(d, i) {0})     
                             .on("mousemove", function(d){
                                 tooltip
                                 .style("left", d3.event.pageX - 50 + "px")
