@@ -65,14 +65,69 @@ html, body {
   margin-right: 0.75em;
 }
 
-#actual-value {
-  margin-left: 0.25em;
+#orig-value {
+  margin-left: 0.5em;
+  text-align: center;
 }
 
-#projected-value {
-  margin-left: 0.25em;
+#le-value {
+  margin-left: 0.5em;
+  text-align: center;
 }
 
-#latest-value {
-  margin-left: 0.25em;
+#ctd-value {
+  margin-left: 0.5em;
+  text-align: center;
+}
+
+.vertical-center, .value-box {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.container-fluid {
+  height: 100%;
+}
+.row {
+  height: 100%;
+}
+i {
+  color: silver;
+}
+i:hover {
+  color: #333;
+}
+p {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+.max-height, center {
+  height: 100%;
+}
+#chart {
+  height: 100%;
+}
+svg {
+  margin-top: 4.0em;
+}
+.value-box {
+  margin-left: 2em;
+  font-size: 20px;
+}
+#epic-name {
+  margin-top: 1em;
+}
+.value-title {
+  font-weight: 600;
+}   
+
+.toolTip {
+  position: absolute;
+  display: none;
+  min-width: 80px;
+  height: auto;
+  background: none repeat scroll 0 0 #ffffff;
+  border: 1px solid #6F257F;
+  padding: 5px;
+  text-align: center;
 }

@@ -8,43 +8,7 @@
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
         <style>
-            .vertical-center, .value-box {
-                position: absolute;
-                top: 50%;
-                transform: translateY(-50%);
-            }
-            .container-fluid {
-                height: 100%;
-            }
-            .row {
-                height: 100%;
-            }
-            i {
-                color: silver;
-            }
-            i:hover {
-                color: #333;
-            }
-            p {
-                margin-top: 1em;
-                margin-bottom: 1em;
-            }
-            .max-height, center {
-                height: 100%;
-            }
-            #chart {
-                height: 100%;
-            }
-            svg {
-                overflow: auto;
-                margin-top: 4.0em;
-            }
-            .value-box {
-                margin-left: 2em;
-            }
-            #epic-name {
-                margin-top: 1.5em;
-            }
+
         </style>
         <script src="https://d3js.org/d3.v5.min.js"></script>
     </head>
@@ -55,17 +19,22 @@
             </div>
             <div class="col-sm-10">
                 <div class="row">
-                    <div class="col-sm-6">
+                    <div class="col-sm-7">
                         <div>
                             <p><h4 id="epic-name">Name</h4></p>
                         </div>
                         <div class="value-box">
-                            <div><i id="blue" class="fas fa-square"></i><p style="display: inline-block;">Actual:</p><p style="display: inline-block;" id="actual-value"></p></div>
-                            <div><i id="orange" class="fas fa-square"></i><p style="display: inline-block;">Projected:</p><p style="display: inline-block;" id="projected-value"></p></div>
-                            <div><i id="green" class="fas fa-square"></i><p style="display: inline-block;">Latest:</p><p style="display: inline-block;" id="latest-value"></p></div>
+                            <div><i id="blue" class="fas fa-square"></i><p
+                                class="value-title" 
+                                style="margin-top: 4rem; margin-bottom: 0em; display: inline-block;">
+                                Original Estimate
+                            </p><p id="orig-value"></p>
+                        </div>
+                            <div><i id="orange" class="fas fa-square"></i><p class="value-title" style="margin-bottom: 0em; display: inline-block;">Latest Estimate</p><p id="le-value"></p></div>
+                            <div><i id="green" class="fas fa-square"></i><p class="value-title" style="margin-bottom: 0em; display: inline-block;">Cost-to-Date</p><p id="ctd-value"></p></div>
                         </div>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-3">
                         <div class="max-height">
                             <center>
                                 <div id="chart"></div>
@@ -141,9 +110,9 @@
                                     for (let doc of docs) {
                                         dataObj.push({
                                             name: doc.name,
-                                            projected: doc.projected,
-                                            actual: doc.actual,
+                                            orig: doc.orig,
                                             le: doc.le,
+                                            ctd: doc.ctd,
                                             start: doc.start,
                                             end: doc.end,
                                         })
@@ -162,9 +131,9 @@
                                     dataObj.sort(compareDate);
 
                                     document.getElementById('epic-name').textContent = dataObj[0].name; 
-                                    document.getElementById('actual-value').textContent = dataObj[0].actual;
-                                    document.getElementById('projected-value').textContent = dataObj[0].projected;
-                                    document.getElementById('latest-value').textContent = dataObj[0].le;
+                                    document.getElementById('orig-value').textContent = `$ ${dataObj[i].orig}`;
+                                    document.getElementById('ctd-value').textContent = `$ ${dataObj[i].ctd}`;
+                                    document.getElementById('le-value').textContent = `$ ${dataObj[i].le}`;
                                     createBar(dataObj[0])
 
                                     // initial value
@@ -174,9 +143,9 @@
                                         function (e) { // the e here is the event itself
                                             prevItem();
                                             document.getElementById('epic-name').textContent = dataObj[i].name;
-                                            document.getElementById('actual-value').textContent = dataObj[i].actual;
-                                            document.getElementById('projected-value').textContent = dataObj[i].projected;
-                                            document.getElementById('latest-value').textContent = dataObj[i].le;
+                                            document.getElementById('orig-value').textContent = dataObj[i].orig;
+                                            document.getElementById('ctd-value').textContent = dataObj[i].ctd;
+                                            document.getElementById('le-value').textContent = dataObj[i].le;
                                             createBar(dataObj[i])
                                         }
                                     );
@@ -186,9 +155,9 @@
                                         function (e) { // the e here is the event itself
                                             nextItem();
                                             document.getElementById('epic-name').textContent = dataObj[i].name;
-                                            document.getElementById('actual-value').textContent = dataObj[i].actual;
-                                            document.getElementById('projected-value').textContent = dataObj[i].projected;
-                                            document.getElementById('latest-value').textContent = dataObj[i].le;
+                                            document.getElementById('orig-value').textContent = `$ ${dataObj[i].orig}`;
+                                            document.getElementById('ctd-value').textContent = `$ ${dataObj[i].ctd}`;
+                                            document.getElementById('le-value').textContent = `$ ${dataObj[i].le}`;
                                             createBar(dataObj[i])
                                         }
                                     );
@@ -224,116 +193,68 @@
                     let obj = []
                     obj[0] = dat
 
-                    let biggesteClass = '';
-                    let biggestVal = 0;
-                    let secondClass = '';
-                    let secondVal = 0;
-                    let thirdClass = '';
-                    let thirdVal = 0;
-
                     // Create variable for the SVG
                     var svg = d3.select("#chart").append("svg")
-                        .attr("height", '110em')
-                        .attr("width", '110em');
+                        .attr("height", document.getElementById('chart').style.height)
+                        .attr("width", 225);
 
-                    if (parseInt(obj[0].actual) > parseInt(obj[0].projected) && parseInt(obj[0].projected) > parseInt(obj[0].le)) {
-                        biggesteClass = 'bar';
-                        biggestVal = obj[0].actual;
-                        secondClass ='bar2';
-                        secondVal = obj[0].projected;
-                        thirdClass ='bar3';
-                        thirdVal = obj[0].le;
-                    } else if (parseInt(obj[0].actual) > parseInt(obj[0].le) && parseInt(obj[0].le) > parseInt(obj[0].projected)) {
-                        biggesteClass = 'bar';
-                        biggestVal = obj[0].actual;
-                        secondClass = 'bar3';
-                        secondVal = obj[0].le;
-                        thirdClass ='bar2';
-                        thirdVal = obj[0].projected;
-                    } else if (parseInt(obj[0].projected) > parseInt(obj[0].actual) && parseInt(obj[0].actual) > parseInt(obj[0].le)) {
-                        biggesteClass = 'bar2';
-                        biggestVal = obj[0].projected;
-                        secondClass ='bar';
-                        secondVal = obj[0].actual;
-                        thirdClass ='bar3';
-                        thirdVal = obj[0].le;
-                    }  else if (parseInt(obj[0].projected) > parseInt(obj[0].le) && parseInt(obj[0].le) > parseInt(obj[0].actual)) {
-                        biggesteClass = 'bar2';
-                        biggestVal = obj[0].projected;
-                        secondClass ='bar3';
-                        secondVal = obj[0].le;
-                        thirdClass ='bar';
-                        thirdVal = parseInt(obj[0].actual);
-                    } else if (parseInt(obj[0].le) > parseInt(obj[0].actual) && parseInt(obj[0].actual) > parseInt(obj[0].projected)) {
-                        biggesteClass = 'bar3';
-                        biggestVal = obj[0].le;
-                        secondClass ='bar';
-                        secondVal = obj[0].actual;
-                        thirdClass ='bar2';
-                        thirdVal = obj[0].projected;
-                    } else {
-                        biggesteClass = 'bar3';
-                        biggestVal = obj[0].le;
-                        secondClass ='bar2';
-                        secondVal = obj[0].projected;
-                        thirdClass ='bar';
-                        thirdVal = obj[0].actual;
-                    }
+
+                    var tooltip = d3.select("body").append("div").attr("class", "toolTip");
 
                     // Select, append to SVG, and add attributes to rectangles for bar chart
-                    svg.selectAll("." + biggesteClass)
+                    svg.selectAll(".bar")
                         .data(obj)
                         .enter().append("rect")
-                            .attr("class", biggesteClass)
-                            .attr("height", function(d, i) {return (biggestVal * 10)})
-                            .attr("width","150")
-                            .attr("x", function(d, i) {return (i * 80) + 25})
-                            .attr("y", function(d, i) {return 280 - (biggestVal * 10)});    
+                            .attr("class", 'bar')
+                            .attr("height", function(d, i) {return (obj[0].orig * 5)})
+                            .attr("width", 60)
+                            .attr("x", function(d, i) {return (i * 80)})
+                            .attr("y", function(d, i) {return 285 - (obj[0].orig * 5)})    
+                            .on("mousemove", function(d){
+                                tooltip
+                                .style("left", d3.event.pageX - 50 + "px")
+                                .style("top", d3.event.pageY - 70 + "px")
+                                .style("display", "inline-block")
+                                .html("$" + (obj[0].orig));
+                            })
+                            .on("mouseout", function(d){ tooltip.style("display", "none");});
 
-                    svg.selectAll("." + secondClass)
+                    svg.selectAll(".bar2")
                         .data(obj)
                         .enter().append("rect")
-                            .attr("class", secondClass)
-                            .attr("height", function(d, i) {return (secondVal * 10)})
-                            .attr("width","150")
-                            .attr("x", function(d, i) {return (i * 80) + 25})
-                            .attr("y", function(d, i) {return 280 - (secondVal * 10)}); 
+                            .attr("class", 'bar2')
+                            .attr("height", function(d, i) {return (obj[0].le * 5)})
+                            .attr("width", 60)
+                            .attr("x", function(d, i) {return (i * 80) + 60})
+                            .attr("y", function(d, i) {return 285 - (obj[0].le * 5)})   
+                            .on("mousemove", function(d){
+                                tooltip
+                                .style("left", d3.event.pageX - 50 + "px")
+                                .style("top", d3.event.pageY - 70 + "px")
+                                .style("display", "inline-block")
+                                .html("$" + (obj[0].le));
+                            })
+                            .on("mouseout", function(d){ tooltip.style("display", "none");});
 
-                    svg.selectAll("." + thirdClass)
+                    svg.selectAll(".bar3")
                         .data(obj)
                         .enter().append("rect")
-                            .attr("class", thirdClass)
-                            .attr("height", function(d, i) {return (thirdVal * 10)})
-                            .attr("width","150")
-                            .attr("x", function(d, i) {return (i * 80) + 25})
-                            .attr("y", function(d, i) {return 280 - (thirdVal * 10)}); 
+                            .attr("class", 'bar3')
+                            .attr("height", function(d, i) {return (obj[0].ctd * 5)})
+                            .attr("width", 60)
+                            .attr("x", function(d, i) {return (i * 80) + (2 * 60)})
+                            .attr("y", function(d, i) {return 285 - (obj[0].ctd * 5)})  
+                            .on("mousemove", function(d){
+                                tooltip
+                                .style("left", d3.event.pageX - 50 + "px")
+                                .style("top", d3.event.pageY - 70 + "px")
+                                .style("display", "inline-block")
+                                .html("$" + (obj[0].ctd));
+                            })
+                            .on("mouseout", function(d){ tooltip.style("display", "none");});
 
 
                     // Select, append to SVG, and add attributes to text
-                    svg.selectAll(".text")
-                        .data(obj)
-                        .enter().append("text")
-                        .text(function(d) {return d.actual})
-                            .attr("class", "text")
-                            .attr("x", function(d, i) {return 93})
-                            .attr("y", function(d, i) {return 295 - (d.actual * 10)});
 
-                    // Select, append to SVG, and add attributes to text
-                    svg.selectAll(".text2")
-                        .data(obj)
-                        .enter().append("text")
-                        .text(function(d) {return d.projected})
-                            .attr("class", "text2")
-                            .attr("x", function(d, i) {return 93})
-                            .attr("y", function(d, i) {return 295 - (d.projected * 10)});
-
-                    // Select, append to SVG, and add attributes to text
-                    svg.selectAll(".text3")
-                        .data(obj)
-                        .enter().append("text")
-                        .text(function(d) {return d.le})
-                            .attr("class", "text3")
-                            .attr("x", function(d, i) {return 93})
-                            .attr("y", function(d, i) {return 295 - (d.le * 10)});
                 }
         </script>
