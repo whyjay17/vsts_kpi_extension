@@ -83,6 +83,12 @@
                 let dataObj = [];
                 var i = 0;
 
+                var formatter = new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    minimumFractionDigits: 0,
+                });
+
                 setDBName()
                     .then(function(res) {
                         // Gets the Web Context Info: Like Project Name
@@ -131,9 +137,9 @@
                                     dataObj.sort(compareDate);
 
                                     document.getElementById('epic-name').textContent = dataObj[0].name; 
-                                    document.getElementById('orig-value').textContent = `$ ${dataObj[i].orig}`;
-                                    document.getElementById('ctd-value').textContent = `$ ${dataObj[i].ctd}`;
-                                    document.getElementById('le-value').textContent = `$ ${dataObj[i].le}`;
+                                    document.getElementById('orig-value').textContent = formatter.format(dataObj[i].orig);
+                                    document.getElementById('ctd-value').textContent = formatter.format(dataObj[i].ctd);
+                                    document.getElementById('le-value').textContent = formatter.format(dataObj[i].le);
                                     createBar(dataObj[0])
 
                                     // initial value
@@ -143,9 +149,9 @@
                                         function (e) { // the e here is the event itself
                                             prevItem();
                                             document.getElementById('epic-name').textContent = dataObj[i].name;
-                                            document.getElementById('orig-value').textContent = dataObj[i].orig;
-                                            document.getElementById('ctd-value').textContent = dataObj[i].ctd;
-                                            document.getElementById('le-value').textContent = dataObj[i].le;
+                                            document.getElementById('orig-value').textContent = formatter.format(dataObj[i].orig);
+                                            document.getElementById('ctd-value').textContent = formatter.format(dataObj[i].ctd);
+                                            document.getElementById('le-value').textContent = formatter.format(dataObj[i].le);
                                             createBar(dataObj[i])
                                         }
                                     );
@@ -155,9 +161,9 @@
                                         function (e) { // the e here is the event itself
                                             nextItem();
                                             document.getElementById('epic-name').textContent = dataObj[i].name;
-                                            document.getElementById('orig-value').textContent = `$ ${dataObj[i].orig}`;
-                                            document.getElementById('ctd-value').textContent = `$ ${dataObj[i].ctd}`;
-                                            document.getElementById('le-value').textContent = `$ ${dataObj[i].le}`;
+                                            document.getElementById('orig-value').textContent = formatter.format(dataObj[i].orig);
+                                            document.getElementById('ctd-value').textContent = formatter.format(dataObj[i].ctd);
+                                            document.getElementById('le-value').textContent = formatter.format(dataObj[i].le);
                                             createBar(dataObj[i])
                                         }
                                     );
@@ -215,7 +221,7 @@
                                 .style("left", d3.event.pageX - 50 + "px")
                                 .style("top", d3.event.pageY - 70 + "px")
                                 .style("display", "inline-block")
-                                .html("$ " + (obj[0].orig));
+                                .html(formatter.format(obj[0].orig));
                             })
                             .on("mouseout", function(d){ tooltip.style("display", "none");});
 
@@ -232,7 +238,7 @@
                                 .style("left", d3.event.pageX - 50 + "px")
                                 .style("top", d3.event.pageY - 70 + "px")
                                 .style("display", "inline-block")
-                                .html("$ " + (obj[0].le));
+                                .html(formatter.format(obj[0].le));
                             })
                             .on("mouseout", function(d){ tooltip.style("display", "none");});
 
@@ -249,7 +255,7 @@
                                 .style("left", d3.event.pageX - 50 + "px")
                                 .style("top", d3.event.pageY - 70 + "px")
                                 .style("display", "inline-block")
-                                .html("$ " + (obj[0].ctd));
+                                .html(formatter.format(obj[0].ctd));
                             })
                             .on("mouseout", function(d){ tooltip.style("display", "none");});
 
