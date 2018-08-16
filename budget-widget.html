@@ -195,7 +195,7 @@
 
                     // Create variable for the SVG
                     var svg = d3.select("#chart").append("svg")
-                        .attr("height", document.getElementById('chart').style.height)
+                        .attr("height", '100em')
                         .attr("width", 225);
 
 
@@ -206,10 +206,10 @@
                         .data(obj)
                         .enter().append("rect")
                             .attr("class", 'bar')
-                            .attr("height", function(d, i) {return (obj[0].orig * 5)})
+                            .attr("height", function(d, i) { return 280 * (parseInt(obj[0].orig) / (parseInt(obj[0].orig) + parseInt(obj[0].le) + parseInt(obj[0].ctd)))})
                             .attr("width", 60)
                             .attr("x", function(d, i) {return (i * 80)})
-                            .attr("y", function(d, i) {0})    
+                            .attr("y", function(d, i) {return 280 - (280 * (parseInt(obj[0].orig) / (parseInt(obj[0].orig) + parseInt(obj[0].le) + parseInt(obj[0].ctd))))})    
                             .on("mousemove", function(d){
                                 tooltip
                                 .style("left", d3.event.pageX - 50 + "px")
@@ -223,10 +223,10 @@
                         .data(obj)
                         .enter().append("rect")
                             .attr("class", 'bar2')
-                            .attr("height", function(d, i) {return (obj[0].le * 5)})
+                            .attr("height", function(d, i) { return 280 * (parseInt(obj[0].le) / (parseInt(obj[0].orig) + parseInt(obj[0].le) + parseInt(obj[0].ctd)))})
                             .attr("width", 60)
                             .attr("x", function(d, i) {return (i * 80) + 60})
-                            .attr("y", function(d, i) {0})      
+                            .attr("y", function(d, i) {return 280 - (280 * (parseInt(obj[0].le) / (parseInt(obj[0].orig) + parseInt(obj[0].le) + parseInt(obj[0].ctd))))})      
                             .on("mousemove", function(d){
                                 tooltip
                                 .style("left", d3.event.pageX - 50 + "px")
@@ -240,10 +240,10 @@
                         .data(obj)
                         .enter().append("rect")
                             .attr("class", 'bar3')
-                            .attr("height", function(d, i) {return (obj[0].ctd * 5)})
+                            .attr("height", function(d, i) { return 280 * (parseInt(obj[0].ctd) / (parseInt(obj[0].orig) + parseInt(obj[0].le) + parseInt(obj[0].ctd)))})
                             .attr("width", 60)
                             .attr("x", function(d, i) {return (i * 80) + (2 * 60)})
-                            .attr("y", function(d, i) {0})     
+                            .attr("y", function(d, i) {return 280 - (280 * (parseInt(obj[0].ctd) / (parseInt(obj[0].orig) + parseInt(obj[0].le) + parseInt(obj[0].ctd))))})     
                             .on("mousemove", function(d){
                                 tooltip
                                 .style("left", d3.event.pageX - 50 + "px")
